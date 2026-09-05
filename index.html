@@ -179,6 +179,26 @@
     padding: 4px 8px;
     border-radius: 4px;
   }
+  .card .wish-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255,255,255,0.85);
+    color: #cccccc;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card .wish-btn.active {
+    color: #E5384D;
+  }
   .card h3 {
     font-size: 15px;
     font-weight: bold;
@@ -235,6 +255,8 @@
     font-weight: bold;
   }
   .card .rating {
+    display: flex;
+    align-items: center;
     font-size: 13px;
     color: #F5A623;
     margin-bottom: 4px;
@@ -242,6 +264,11 @@
   .card .rating .review-count {
     color: #999999;
     margin-left: 4px;
+  }
+  .card .rating .wish-count {
+    margin-left: auto;
+    color: #E5384D;
+    font-size: 12px;
   }
   .card .tags {
     font-size: 12px;
@@ -343,6 +370,7 @@
       <div class="photo-wrap">
         <img class="photo" src="images/egg-pan.jpg" alt="4구 에그팬 팬케이크팬">
         <span class="badge">신상제품</span>
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
       </div>
       <h3>4구 에그팬 팬케이크팬</h3>
       <div class="old-price">29,900원</div>
@@ -356,21 +384,24 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.8 <span class="review-count">(128)</span></div>
+      <div class="rating">★4.8 <span class="review-count">(128)</span><span class="wish-count" data-count="46">♥ 46</span></div>
       <div class="tags">#신상 #브런치템</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
 
     <div class="card" data-category="bath">
-      <svg class="photo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="욕실 샤워기 세트">
-        <rect width="200" height="140" fill="#E8F4FA"/>
-        <rect x="90" y="10" width="20" height="18" fill="#A8D8E8"/>
-        <rect x="65" y="25" width="70" height="16" rx="8" fill="#7CC3DE"/>
-        <line x1="80" y1="45" x2="75" y2="95" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
-        <line x1="95" y1="45" x2="93" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
-        <line x1="110" y1="45" x2="107" y2="95" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
-        <line x1="120" y1="45" x2="122" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
-      </svg>
+      <div class="photo-wrap">
+        <svg class="photo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="욕실 샤워기 세트">
+          <rect width="200" height="140" fill="#E8F4FA"/>
+          <rect x="90" y="10" width="20" height="18" fill="#A8D8E8"/>
+          <rect x="65" y="25" width="70" height="16" rx="8" fill="#7CC3DE"/>
+          <line x1="80" y1="45" x2="75" y2="95" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+          <line x1="95" y1="45" x2="93" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+          <line x1="110" y1="45" x2="107" y2="95" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+          <line x1="120" y1="45" x2="122" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
       <h3>욕실 샤워기 세트</h3>
       <div class="old-price">39,000원</div>
       <div class="price-row">
@@ -383,20 +414,23 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.6 <span class="review-count">(54)</span></div>
+      <div class="rating">★4.6 <span class="review-count">(54)</span><span class="wish-count" data-count="21">♥ 21</span></div>
       <div class="tags">#욕실템 #수압강화</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
 
     <div class="card" data-category="life">
-      <svg class="photo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="다용도 정리 바구니">
-        <rect width="200" height="140" fill="#FCE9D8"/>
-        <path d="M80 60 C80 30, 120 30, 120 60" stroke="#B5663A" stroke-width="6" fill="none"/>
-        <path d="M50 60 L150 60 L135 120 L65 120 Z" fill="#D9A066"/>
-        <line x1="60" y1="75" x2="140" y2="75" stroke="#B5663A" stroke-width="2"/>
-        <line x1="63" y1="90" x2="137" y2="90" stroke="#B5663A" stroke-width="2"/>
-        <line x1="66" y1="105" x2="134" y2="105" stroke="#B5663A" stroke-width="2"/>
-      </svg>
+      <div class="photo-wrap">
+        <svg class="photo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="다용도 정리 바구니">
+          <rect width="200" height="140" fill="#FCE9D8"/>
+          <path d="M80 60 C80 30, 120 30, 120 60" stroke="#B5663A" stroke-width="6" fill="none"/>
+          <path d="M50 60 L150 60 L135 120 L65 120 Z" fill="#D9A066"/>
+          <line x1="60" y1="75" x2="140" y2="75" stroke="#B5663A" stroke-width="2"/>
+          <line x1="63" y1="90" x2="137" y2="90" stroke="#B5663A" stroke-width="2"/>
+          <line x1="66" y1="105" x2="134" y2="105" stroke="#B5663A" stroke-width="2"/>
+        </svg>
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
       <h3>다용도 정리 바구니</h3>
       <div class="old-price">15,000원</div>
       <div class="price-row">
@@ -409,7 +443,7 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.5 <span class="review-count">(201)</span></div>
+      <div class="rating">★4.5 <span class="review-count">(201)</span><span class="wish-count" data-count="58">♥ 58</span></div>
       <div class="tags">#수납꿀템 #생활용품</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
@@ -418,6 +452,7 @@
       <div class="photo-wrap">
         <img class="photo" src="images/oven-mitts.jpg" alt="주방 오븐장갑">
         <span class="badge">베스트제품</span>
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
       </div>
       <h3>귀여운 도트 오븐장갑</h3>
       <div class="old-price">15,000원</div>
@@ -431,13 +466,16 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.9 <span class="review-count">(312)</span></div>
+      <div class="rating">★4.9 <span class="review-count">(312)</span><span class="wish-count" data-count="73">♥ 73</span></div>
       <div class="tags">#베스트 #주방소품</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
 
     <div class="card" data-category="bath">
-      <img class="photo" src="images/beach-towel.jpg" alt="극세사 타올가운">
+      <div class="photo-wrap">
+        <img class="photo" src="images/beach-towel.jpg" alt="극세사 타올가운">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
       <h3>극세사 스트라이프 타올가운</h3>
       <div class="old-price">22,000원</div>
       <div class="price-row">
@@ -450,13 +488,16 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.7 <span class="review-count">(89)</span></div>
+      <div class="rating">★4.7 <span class="review-count">(89)</span><span class="wish-count" data-count="34">♥ 34</span></div>
       <div class="tags">#욕실템 #선물추천</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
 
     <div class="card" data-category="life">
-      <img class="photo" src="images/vacuum.jpg" alt="무선 청소기">
+      <div class="photo-wrap">
+        <img class="photo" src="images/vacuum.jpg" alt="무선 청소기">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
       <h3>무선 로봇 청소기</h3>
       <div class="old-price">89,000원</div>
       <div class="price-row">
@@ -469,13 +510,16 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.4 <span class="review-count">(37)</span></div>
+      <div class="rating">★4.4 <span class="review-count">(37)</span><span class="wish-count" data-count="12">♥ 12</span></div>
       <div class="tags">#생활가전 #청소템</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
 
     <div class="card" data-category="kitchen">
-      <img class="photo" src="images/cutting-board.jpg" alt="원목 도마">
+      <div class="photo-wrap">
+        <img class="photo" src="images/cutting-board.jpg" alt="원목 도마">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
       <h3>원목 주방 도마</h3>
       <div class="old-price">18,000원</div>
       <div class="price-row">
@@ -488,13 +532,16 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.6 <span class="review-count">(76)</span></div>
+      <div class="rating">★4.6 <span class="review-count">(76)</span><span class="wish-count" data-count="27">♥ 27</span></div>
       <div class="tags">#주방소품 #원목</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
 
     <div class="card" data-category="bath">
-      <img class="photo" src="images/shower-ball.jpg" alt="샤워볼">
+      <div class="photo-wrap">
+        <img class="photo" src="images/shower-ball.jpg" alt="샤워볼">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
       <h3>거품 샤워볼</h3>
       <div class="old-price">6,000원</div>
       <div class="price-row">
@@ -507,7 +554,7 @@
         <span class="delivery-label">배송</span>
         <span>9/8(화) 도착</span>
       </div>
-      <div class="rating">★4.3 <span class="review-count">(152)</span></div>
+      <div class="rating">★4.3 <span class="review-count">(152)</span><span class="wish-count" data-count="40">♥ 40</span></div>
       <div class="tags">#욕실템 #가성비</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
     </div>
@@ -538,6 +585,24 @@
     // 버튼 클릭 시 알림창 띄우기
     function showAlert(message) {
       alert(message);
+    }
+
+    // 하트 버튼 클릭 시 찜하기 토글
+    function toggleWish(btn) {
+      var card = btn.closest('.card');
+      var countEl = card.querySelector('.wish-count');
+      var count = parseInt(countEl.dataset.count, 10);
+
+      if (btn.classList.contains('active')) {
+        btn.classList.remove('active');
+        count -= 1;
+      } else {
+        btn.classList.add('active');
+        count += 1;
+      }
+
+      countEl.dataset.count = count;
+      countEl.textContent = '♥ ' + count;
     }
 
     // 메뉴 클릭 시 상품 필터링
