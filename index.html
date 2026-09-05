@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>빈이율이샵</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  /* 전체 기본 설정 */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Gowun Dodum", "Malgun Gothic", sans-serif; /* 예쁜 글씨체 */
+  }
+  body {
+    background-color: #F5F6F7;
+    color: #333333;
+  }
+
+  /* 가운데로 폭을 맞추는 틀 */
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* 상단 헤더 */
+  header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    padding: 22px 20px;
+  }
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background-color: #FCE9D8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  header h1 {
+    font-size: 26px;
+    color: #E5384D;
+  }
+  header p {
+    margin-top: 2px;
+    font-size: 13px;
+    color: #888888;
+  }
+  .header-stats {
+    font-size: 12px;
+    color: #999999;
+  }
+
+  /* 카테고리 메뉴 (필터 겸용) */
+  nav {
+    background-color: #ffffff;
+    padding: 14px 0;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 26px;
+  }
+  nav a {
+    text-decoration: none;
+    color: #333333;
+    font-size: 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid transparent;
+  }
+  nav a:hover,
+  nav a.active {
+    color: #E5384D;
+    border-bottom: 2px solid #E5384D;
+  }
+
+  /* 큰 프로모션 배너 (영상) */
+  .banner {
+    position: relative;
+    background-color: #2B211B;
+    line-height: 0;
+  }
+  .banner video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .banner-shop-btn {
+    position: absolute;
+    left: 50%;
+    top: 72%;
+    transform: translateX(-50%);
+    width: 12%;
+    height: 19%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  /* 안내 바 */
+  .notice-bar {
+    background-color: #E9F4FB;
+    color: #3A7CA5;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  /* 상품 섹션 제목 */
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 20px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-head h2 {
+    font-size: 20px;
+  }
+  .section-head a {
+    font-size: 13px;
+    color: #888888;
+    text-decoration: none;
+  }
+
+  /* 상품 목록 */
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 20px 50px;
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: #F5F6F7;
+  }
+  .card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .card .photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-bottom: 10px;
+  }
+  .card .photo-wrap {
+    position: relative;
+  }
+  .card .badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: #B0000A;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  .card .price {
+    color: #E5384D;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .card .discount-rate {
+    margin-right: 4px;
+  }
+  .card .old-price {
+    text-decoration: line-through;
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .card .rating {
+    font-size: 13px;
+    color: #F5A623;
+    margin-bottom: 4px;
+  }
+  .card .rating .review-count {
+    color: #999999;
+    margin-left: 4px;
+  }
+  .card .tags {
+    font-size: 12px;
+    color: #6B8CAE;
+    margin-bottom: 14px;
+  }
+  .card button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 15px;
+    background-color: #F1B57C;
+    color: #fff;
+    cursor: pointer;
+  }
+  .card button:hover {
+    background-color: #C97B4A;
+  }
+
+  /* 하단 연락처 */
+  footer {
+    text-align: center;
+    padding: 25px;
+    background-color: #ffffff;
+    border-top: 1px solid #eeeeee;
+    font-size: 14px;
+    color: #777777;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 상단: 쇼핑몰 로고와 이름 -->
+  <header>
+    <div class="wrap header-inner">
+      <div class="brand">
+        <span class="brand-logo">🏠</span>
+        <div>
+          <h1>빈이율이 shop</h1>
+          <p>주방·욕실·생활용품 셀렉트 샵</p>
+        </div>
+      </div>
+      <div class="header-stats">스토어찜 1,204 · 톡톡친구 8,320</div>
+    </div>
+  </header>
+
+  <!-- 메뉴: 카테고리 필터 겸용 -->
+  <nav>
+    <div class="wrap nav-inner">
+      <a href="#" id="filter-all" class="active" onclick="filterProducts('all', this); return false;">🛍 전체</a>
+      <a href="#" onclick="filterProducts('kitchen', this); return false;">🍳 주방용품</a>
+      <a href="#" onclick="filterProducts('bath', this); return false;">🚿 욕실용품</a>
+      <a href="#" onclick="filterProducts('life', this); return false;">🧺 생활용품</a>
+      <a href="#">🔥 이벤트</a>
+    </div>
+  </nav>
+
+  <!-- 큰 프로모션 배너 (영상) -->
+  <section class="banner">
+    <video autoplay loop muted playsinline>
+      <source src="video/discount-banner.mp4" type="video/mp4">
+    </video>
+    <button class="banner-shop-btn" onclick="showAlert('쿠폰이 발급되었습니다!')" aria-label="지금 쇼핑하기"></button>
+  </section>
+
+  <!-- 안내 바 -->
+  <div class="notice-bar">🔄 해당 스토어는 무료 교환·반품 서비스를 제공합니다</div>
+
+  <!-- 상품 섹션 제목 -->
+  <div class="section-head">
+    <h2>지금 인기 있는 상품 👀</h2>
+    <a href="#" onclick="filterProducts('all', document.getElementById('filter-all')); return false;">전체보기 →</a>
+  </div>
+
+  <!-- 상품 카드 8개 -->
+  <section class="products">
+    <div class="card" data-category="kitchen">
+      <div class="photo-wrap">
+        <img class="photo" src="images/egg-pan.jpg" alt="4구 에그팬 팬케이크팬">
+        <span class="badge">신상제품</span>
+      </div>
+      <h3>4구 에그팬 팬케이크팬</h3>
+      <div class="price"><span class="discount-rate">15%</span>25,400원</div>
+      <div class="old-price">29,900원</div>
+      <div class="rating">★4.8 <span class="review-count">(128)</span></div>
+      <div class="tags">#신상 #브런치템</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="bath">
+      <svg class="photo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="욕실 샤워기 세트">
+        <rect width="200" height="140" fill="#E8F4FA"/>
+        <rect x="90" y="10" width="20" height="18" fill="#A8D8E8"/>
+        <rect x="65" y="25" width="70" height="16" rx="8" fill="#7CC3DE"/>
+        <line x1="80" y1="45" x2="75" y2="95" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+        <line x1="95" y1="45" x2="93" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="45" x2="107" y2="95" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+        <line x1="120" y1="45" x2="122" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <h3>욕실 샤워기 세트</h3>
+      <div class="price"><span class="discount-rate">15%</span>33,200원</div>
+      <div class="old-price">39,000원</div>
+      <div class="rating">★4.6 <span class="review-count">(54)</span></div>
+      <div class="tags">#욕실템 #수압강화</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="life">
+      <svg class="photo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="다용도 정리 바구니">
+        <rect width="200" height="140" fill="#FCE9D8"/>
+        <path d="M80 60 C80 30, 120 30, 120 60" stroke="#B5663A" stroke-width="6" fill="none"/>
+        <path d="M50 60 L150 60 L135 120 L65 120 Z" fill="#D9A066"/>
+        <line x1="60" y1="75" x2="140" y2="75" stroke="#B5663A" stroke-width="2"/>
+        <line x1="63" y1="90" x2="137" y2="90" stroke="#B5663A" stroke-width="2"/>
+        <line x1="66" y1="105" x2="134" y2="105" stroke="#B5663A" stroke-width="2"/>
+      </svg>
+      <h3>다용도 정리 바구니</h3>
+      <div class="price"><span class="discount-rate">15%</span>12,800원</div>
+      <div class="old-price">15,000원</div>
+      <div class="rating">★4.5 <span class="review-count">(201)</span></div>
+      <div class="tags">#수납꿀템 #생활용품</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="kitchen">
+      <div class="photo-wrap">
+        <img class="photo" src="images/oven-mitts.jpg" alt="주방 오븐장갑">
+        <span class="badge">베스트제품</span>
+      </div>
+      <h3>귀여운 도트 오븐장갑</h3>
+      <div class="price"><span class="discount-rate">15%</span>12,800원</div>
+      <div class="old-price">15,000원</div>
+      <div class="rating">★4.9 <span class="review-count">(312)</span></div>
+      <div class="tags">#베스트 #주방소품</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="bath">
+      <img class="photo" src="images/beach-towel.jpg" alt="극세사 타올가운">
+      <h3>극세사 스트라이프 타올가운</h3>
+      <div class="price"><span class="discount-rate">15%</span>18,700원</div>
+      <div class="old-price">22,000원</div>
+      <div class="rating">★4.7 <span class="review-count">(89)</span></div>
+      <div class="tags">#욕실템 #선물추천</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="life">
+      <img class="photo" src="images/vacuum.jpg" alt="무선 청소기">
+      <h3>무선 로봇 청소기</h3>
+      <div class="price"><span class="discount-rate">15%</span>75,700원</div>
+      <div class="old-price">89,000원</div>
+      <div class="rating">★4.4 <span class="review-count">(37)</span></div>
+      <div class="tags">#생활가전 #청소템</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="kitchen">
+      <img class="photo" src="images/cutting-board.jpg" alt="원목 도마">
+      <h3>원목 주방 도마</h3>
+      <div class="price"><span class="discount-rate">15%</span>15,300원</div>
+      <div class="old-price">18,000원</div>
+      <div class="rating">★4.6 <span class="review-count">(76)</span></div>
+      <div class="tags">#주방소품 #원목</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+
+    <div class="card" data-category="bath">
+      <img class="photo" src="images/shower-ball.jpg" alt="샤워볼">
+      <h3>거품 샤워볼</h3>
+      <div class="price"><span class="discount-rate">15%</span>5,100원</div>
+      <div class="old-price">6,000원</div>
+      <div class="rating">★4.3 <span class="review-count">(152)</span></div>
+      <div class="tags">#욕실템 #가성비</div>
+      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+    </div>
+  </section>
+
+  <!-- 하단 연락처 -->
+  <footer>
+    <div class="wrap">
+      <p>고객센터: 010-3371-2212 | 이메일: help@binyul.shop</p>
+      <p>운영시간: 평일 09:00 ~ 18:00</p>
+    </div>
+  </footer>
+
+  <script>
+    // 버튼 클릭 시 알림창 띄우기
+    function showAlert(message) {
+      alert(message);
+    }
+
+    // 메뉴 클릭 시 상품 필터링
+    function filterProducts(category, clickedLink) {
+      document.querySelectorAll('nav a').forEach(function (link) {
+        link.classList.remove('active');
+      });
+      clickedLink.classList.add('active');
+
+      document.querySelectorAll('.card').forEach(function (card) {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
