@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>4구 에그팬 팬케이크팬 - 빈이율이샵</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Gowun Dodum", "Malgun Gothic", sans-serif;
+  }
+  body {
+    background-color: #F5F6F7;
+    color: #333333;
+  }
+  .wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  /* 상단 바 */
+  header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    padding: 16px 20px;
+  }
+  header .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header a.back {
+    text-decoration: none;
+    color: #333333;
+    font-size: 14px;
+  }
+  header .shop-name {
+    font-weight: bold;
+    color: #E5384D;
+  }
+
+  /* 상품 상단 영역 */
+  .product-top {
+    display: flex;
+    gap: 40px;
+    background-color: #ffffff;
+    padding: 30px 20px;
+  }
+  .product-top .gallery {
+    width: 400px;
+    flex-shrink: 0;
+  }
+  .product-top .gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+  .thumbs {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .thumbs img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  .thumbs img.active {
+    border-color: #E5384D;
+  }
+  .info {
+    flex: 1;
+  }
+  .info h1 {
+    font-size: 22px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .info .rating-line {
+    font-size: 14px;
+    color: #F5A623;
+    margin-bottom: 16px;
+  }
+  .info .rating-line .review-count {
+    color: #999999;
+    margin-left: 4px;
+  }
+  .info .old-price {
+    text-decoration: line-through;
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .info .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .info .discount-rate {
+    color: #E5384D;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .info .price {
+    color: #222222;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .info .ship-fee {
+    color: #999999;
+    font-size: 13px;
+  }
+  .info .delivery-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #999999;
+    margin-bottom: 24px;
+  }
+  .info .delivery-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #03C75A;
+    color: #ffffff;
+    font-size: 10px;
+  }
+  .info .delivery-label {
+    color: #03C75A;
+    font-weight: bold;
+  }
+  .info .buy-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  .info .buy-buttons button {
+    flex: 1;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .btn-cart {
+    background-color: #ffffff;
+    border: 1px solid #E5384D !important;
+    color: #E5384D;
+  }
+  .btn-buy {
+    background-color: #E5384D;
+    color: #ffffff;
+  }
+
+  /* 탭 메뉴 */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    background-color: #ffffff;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 2px solid #333333;
+    margin-top: 20px;
+  }
+  .tabs a {
+    display: block;
+    padding: 16px 4px;
+    text-decoration: none;
+    color: #999999;
+    font-size: 15px;
+  }
+  .tabs a.active {
+    color: #333333;
+    font-weight: bold;
+    border-bottom: 2px solid #333333;
+    margin-bottom: -2px;
+  }
+
+  /* 상세설명 영역 */
+  .detail {
+    background-color: #ffffff;
+    padding: 50px 20px;
+  }
+  .detail .wrap {
+    max-width: 800px;
+  }
+  .detail-banner {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .detail-banner img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  .detail-banner .eyebrow {
+    color: #E5384D;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .detail-banner h2 {
+    font-size: 24px;
+    line-height: 1.5;
+  }
+  .detail-banner p {
+    margin-top: 12px;
+    color: #777777;
+    font-size: 15px;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 70px;
+  }
+  .feature.reverse {
+    flex-direction: row-reverse;
+  }
+  .feature img {
+    width: 340px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .feature .num {
+    color: #E5384D;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .feature h3 {
+    font-size: 20px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .feature p {
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.8;
+  }
+
+  .spec-section h2,
+  .notice-section h2 {
+    font-size: 19px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333333;
+  }
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 60px;
+    font-size: 14px;
+  }
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .spec-table th {
+    width: 140px;
+    background-color: #FAFAFA;
+    color: #777777;
+    font-weight: normal;
+  }
+
+  .notice-section ul {
+    list-style: none;
+    font-size: 14px;
+    color: #666666;
+    line-height: 2;
+  }
+  .notice-section li::before {
+    content: "· ";
+    color: #E5384D;
+  }
+
+  /* 하단 연락처 */
+  footer {
+    text-align: center;
+    padding: 25px;
+    background-color: #ffffff;
+    border-top: 1px solid #eeeeee;
+    font-size: 14px;
+    color: #777777;
+  }
+
+  @media (max-width: 720px) {
+    .product-top { flex-direction: column; }
+    .product-top .gallery { width: 100%; }
+    .feature, .feature.reverse { flex-direction: column; }
+    .feature img { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 상단 바 -->
+  <header>
+    <div class="wrap">
+      <a class="back" href="index.html">← 목록으로</a>
+      <span class="shop-name">빈이율이 shop</span>
+    </div>
+  </header>
+
+  <!-- 상품 상단: 이미지 + 구매 정보 -->
+  <section class="product-top">
+    <div class="wrap" style="display:flex; gap:40px; max-width:1000px; margin:0 auto;">
+      <div class="gallery">
+        <img id="mainImage" src="images/egg-pan.jpg" alt="4구 에그팬 팬케이크팬">
+        <div class="thumbs">
+          <img src="images/egg-pan.jpg" class="active" onclick="changeImage(this)">
+          <img src="images/detail-friedegg.jpg" onclick="changeImage(this)">
+          <img src="images/detail-pancake.jpg" onclick="changeImage(this)">
+          <img src="images/detail-induction.jpg" onclick="changeImage(this)">
+        </div>
+      </div>
+
+      <div class="info">
+        <h1>[단독특가] 국산 4구 에그팬 팬케이크팬 계란후라이팬 인덕션 겸용</h1>
+        <div class="rating-line">★4.8 <span class="review-count">(128개 리뷰)</span></div>
+
+        <div class="old-price">29,900원</div>
+        <div class="price-row">
+          <span class="discount-rate">15%</span>
+          <span class="price">25,400원</span>
+          <span class="ship-fee">🚚 배송비 3,000원</span>
+        </div>
+        <div class="delivery-row">
+          <span class="delivery-badge">🚚</span>
+          <span class="delivery-label">배송</span>
+          <span>9/8(화) 도착 예정</span>
+        </div>
+
+        <div class="buy-buttons">
+          <button class="btn-cart" onclick="showAlert('장바구니에 담았습니다!')">장바구니</button>
+          <button class="btn-buy" onclick="showAlert('구매가 완료되었습니다!')">바로구매</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 탭 메뉴 -->
+  <div class="tabs">
+    <a href="#" class="active">상품정보</a>
+    <a href="#">리뷰 (128)</a>
+    <a href="#">Q&amp;A</a>
+    <a href="#">반품/교환</a>
+  </div>
+
+  <!-- 상세설명 -->
+  <section class="detail">
+    <div class="wrap">
+
+      <div class="detail-banner">
+        <p class="eyebrow">BINYULI PICK</p>
+        <h2>아침 식탁이 풍성해지는 시간,<br>4구 에그팬으로 시작하세요</h2>
+        <p>계란후라이, 팬케이크, 소시지까지 - 한 번에 4가지를 동시에 조리해보세요</p>
+        <img src="images/detail-pancake.jpg" alt="팬케이크와 브런치">
+      </div>
+
+      <div class="feature">
+        <img src="images/detail-friedegg.jpg" alt="계란후라이 논스틱 코팅">
+        <div>
+          <div class="num">FEATURE 01</div>
+          <h3>국산 세라믹 논스틱 코팅</h3>
+          <p>
+            PFOA-Free 세라믹 코팅으로 유해물질 걱정 없이 사용할 수 있어요.<br>
+            음식이 눌어붙지 않아 기름 없이도 조리가 가능하고,<br>
+            사용 후에는 물로 쓱 헹구기만 해도 깨끗해져서 설거지가 정말 편해요.
+          </p>
+        </div>
+      </div>
+
+      <div class="feature reverse">
+        <img src="images/egg-pan.jpg" alt="4구 분리 조리">
+        <div>
+          <div class="num">FEATURE 02</div>
+          <h3>4칸으로 나뉘어 있어<br>한 번에 다양한 메뉴를 조리</h3>
+          <p>
+            계란후라이, 미니 팬케이크, 소시지, 어묵까지 - 4칸에 각각 다른 재료를 올려<br>
+            한 번에 조리할 수 있어요. 아침마다 여러 번 팬을 데울 필요 없이<br>
+            한 번의 조리로 풍성한 브런치 한 상을 완성해보세요.
+          </p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <img src="images/detail-induction.jpg" alt="인덕션 가스레인지 겸용">
+        <div>
+          <div class="num">FEATURE 03</div>
+          <h3>가스레인지부터 인덕션까지<br>열원 상관없이 사용 가능</h3>
+          <p>
+            가스레인지, 하이라이트, 인덕션(IH) 어디에서든 사용할 수 있는<br>
+            멀티 열원 호환 제품이에요. 이사하거나 열원이 바뀌어도<br>
+            새로 구매할 필요 없이 계속 사용하실 수 있어요.
+          </p>
+        </div>
+      </div>
+
+      <div class="spec-section">
+        <h2>상세 사양</h2>
+        <table class="spec-table">
+          <tr><th>사이즈</th><td>약 25 x 25 x 4.5cm (칸당 지름 약 9cm)</td></tr>
+          <tr><th>재질</th><td>알루미늄 다이캐스팅 + 세라믹 논스틱 코팅</td></tr>
+          <tr><th>손잡이</th><td>원목 분리형 손잡이</td></tr>
+          <tr><th>사용 가능 열원</th><td>가스레인지, 하이라이트, 인덕션(IH)</td></tr>
+          <tr><th>색상</th><td>베이지</td></tr>
+          <tr><th>원산지</th><td>대한민국(국산)</td></tr>
+          <tr><th>구성품</th><td>팬 본체 1개, 분리형 손잡이 1개</td></tr>
+        </table>
+      </div>
+
+      <div class="notice-section">
+        <h2>사용 시 주의사항</h2>
+        <ul>
+          <li>조리 후 팬이 충분히 식은 뒤 세척해주세요.</li>
+          <li>금속 조리도구 사용 시 코팅이 손상될 수 있어 실리콘·나무 조리도구를 권장합니다.</li>
+          <li>보유하신 열원의 규격(화구 크기 등)을 확인 후 사용해주세요.</li>
+          <li>손잡이는 조리 중에만 결합하고, 세척 시에는 분리해주세요.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 하단 연락처 -->
+  <footer>
+    <p>고객센터: 010-3371-2212 | 이메일: help@binyul.shop</p>
+    <p>운영시간: 평일 09:00 ~ 18:00</p>
+  </footer>
+
+  <script>
+    function showAlert(message) {
+      alert(message);
+    }
+
+    function changeImage(thumb) {
+      document.getElementById('mainImage').src = thumb.src;
+      document.querySelectorAll('.thumbs img').forEach(function (img) {
+        img.classList.remove('active');
+      });
+      thumb.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
