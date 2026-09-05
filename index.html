@@ -154,7 +154,7 @@
     background-color: #ffffff;
     border-radius: 12px;
     padding: 20px;
-    text-align: center;
+    text-align: left;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .card .photo {
@@ -180,23 +180,59 @@
     border-radius: 4px;
   }
   .card h3 {
-    font-size: 17px;
-    margin-bottom: 8px;
-  }
-  .card .price {
-    color: #E5384D;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
-    margin-bottom: 4px;
-  }
-  .card .discount-rate {
-    margin-right: 4px;
+    line-height: 1.4;
+    margin-bottom: 6px;
   }
   .card .old-price {
     text-decoration: line-through;
     color: #aaa;
-    font-size: 14px;
-    margin-bottom: 8px;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+  .card .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .card .discount-rate {
+    color: #E5384D;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .card .price {
+    color: #222222;
+    font-size: 19px;
+    font-weight: bold;
+  }
+  .card .ship-fee {
+    color: #999999;
+    font-size: 12px;
+  }
+  .card .delivery-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #999999;
+    margin-bottom: 10px;
+  }
+  .card .delivery-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #03C75A;
+    color: #ffffff;
+    font-size: 9px;
+  }
+  .card .delivery-row .delivery-label {
+    color: #03C75A;
+    font-weight: bold;
   }
   .card .rating {
     font-size: 13px;
@@ -213,6 +249,7 @@
     margin-bottom: 14px;
   }
   .card button {
+    width: 100%;
     padding: 8px 16px;
     border: none;
     border-radius: 15px;
@@ -287,8 +324,17 @@
         <span class="badge">신상제품</span>
       </div>
       <h3>4구 에그팬 팬케이크팬</h3>
-      <div class="price"><span class="discount-rate">15%</span>25,400원</div>
       <div class="old-price">29,900원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">25,400원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.8 <span class="review-count">(128)</span></div>
       <div class="tags">#신상 #브런치템</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -305,8 +351,17 @@
         <line x1="120" y1="45" x2="122" y2="105" stroke="#7CC3DE" stroke-width="4" stroke-linecap="round"/>
       </svg>
       <h3>욕실 샤워기 세트</h3>
-      <div class="price"><span class="discount-rate">15%</span>33,200원</div>
       <div class="old-price">39,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">33,200원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.6 <span class="review-count">(54)</span></div>
       <div class="tags">#욕실템 #수압강화</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -322,8 +377,17 @@
         <line x1="66" y1="105" x2="134" y2="105" stroke="#B5663A" stroke-width="2"/>
       </svg>
       <h3>다용도 정리 바구니</h3>
-      <div class="price"><span class="discount-rate">15%</span>12,800원</div>
       <div class="old-price">15,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">12,800원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.5 <span class="review-count">(201)</span></div>
       <div class="tags">#수납꿀템 #생활용품</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -335,8 +399,17 @@
         <span class="badge">베스트제품</span>
       </div>
       <h3>귀여운 도트 오븐장갑</h3>
-      <div class="price"><span class="discount-rate">15%</span>12,800원</div>
       <div class="old-price">15,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">12,800원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.9 <span class="review-count">(312)</span></div>
       <div class="tags">#베스트 #주방소품</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -345,8 +418,17 @@
     <div class="card" data-category="bath">
       <img class="photo" src="images/beach-towel.jpg" alt="극세사 타올가운">
       <h3>극세사 스트라이프 타올가운</h3>
-      <div class="price"><span class="discount-rate">15%</span>18,700원</div>
       <div class="old-price">22,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">18,700원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.7 <span class="review-count">(89)</span></div>
       <div class="tags">#욕실템 #선물추천</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -355,8 +437,17 @@
     <div class="card" data-category="life">
       <img class="photo" src="images/vacuum.jpg" alt="무선 청소기">
       <h3>무선 로봇 청소기</h3>
-      <div class="price"><span class="discount-rate">15%</span>75,700원</div>
       <div class="old-price">89,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">75,700원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.4 <span class="review-count">(37)</span></div>
       <div class="tags">#생활가전 #청소템</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -365,8 +456,17 @@
     <div class="card" data-category="kitchen">
       <img class="photo" src="images/cutting-board.jpg" alt="원목 도마">
       <h3>원목 주방 도마</h3>
-      <div class="price"><span class="discount-rate">15%</span>15,300원</div>
       <div class="old-price">18,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">15,300원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.6 <span class="review-count">(76)</span></div>
       <div class="tags">#주방소품 #원목</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
@@ -375,8 +475,17 @@
     <div class="card" data-category="bath">
       <img class="photo" src="images/shower-ball.jpg" alt="샤워볼">
       <h3>거품 샤워볼</h3>
-      <div class="price"><span class="discount-rate">15%</span>5,100원</div>
       <div class="old-price">6,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">5,100원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
       <div class="rating">★4.3 <span class="review-count">(152)</span></div>
       <div class="tags">#욕실템 #가성비</div>
       <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
