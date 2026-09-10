@@ -37,13 +37,15 @@ COLUMN_ALIASES = {
     "orders": ["구매수", "구매수량", "주문수", "주문수량", "주문", "판매수량", "orders", "order"],
     "direct_orders": ["직접전환수", "직접 전환수", "direct conversion count", "directorders"],
     "file_total_cost": ["총비용", "총 비용", "total cost", "totalcost"],
-    "ad_cost": ["광고비", "소진광고비", "총광고비", "비용", "cost", "spend"],
+    "ad_cost": ["광고비용", "광고비", "소진광고비", "총광고비", "비용", "cost", "spend"],
     "sales": [
         "구매금액", "구매금액금액", "매출액금액", "매출액", "매출금액", "주문금액", "판매금액", "판매액",
-        "총매출", "거래액", "전환매출", "광고전환매출", "광고매출", "sales", "revenue",
+        "판매자전환금액", "총매출", "거래액", "전환매출", "광고전환매출", "광고매출", "sales", "revenue",
     ],
     "direct_sales": ["직접전환금액", "직접 전환금액", "direct conversion amount", "directsales"],
     "direct_ad_return": ["직접광고수익률", "직접 광고수익률", "direct ad return", "directroas"],
+    "seller_conversion_sales": ["판매자전환금액", "판매자 전환 금액", "seller conversion amount"],
+    "seller_conversion_orders": ["판매자전환수", "판매자 전환 수", "판매자전환", "seller conversion count"],
     "supply_cost": ["공급가", "매입가", "원가", "공급가격", "costprice"],
     "platform_fee": ["수수료", "판매수수료", "플랫폼수수료", "fee"],
     "shipping": ["배송비", "배송비용", "shipping"],
@@ -105,6 +107,22 @@ def read_uploaded_file(uploaded_file) -> pd.DataFrame:
     frames = []
     for sheet in workbook.sheet_names:
         default_frame = pd.read_excel(io.BytesIO(raw), sheet_name=sheet)
+        preview = pd.read_excel(io.BytesIO(raw), sheet_name=sheet, header=None, nrows=20)
+        header_index = None
+        for row_index in range(len(preview.index)):
+            row_text = " ".join(clean_name(value) for value in preview.iloc[row_index].tolist())
+            header_markers = sum(
+                marker in row_text
+                for marker in ("상품명", "상품번호", "노출수", "클릭수", "광고비용", "판매자전환금액")
+            )
+            if header_markers >= 3:
+                header_index = row_index
+                break
+        if header_index is not None:
+            report_frame = pd.read_excel(io.BytesIO(raw), sheet_name=sheet, header=header_index)
+            report_frame = report_frame.dropna(how="all").reset_index(drop=True)
+            frames.append(report_frame)
+            continue
         first_row_text = " ".join(str(value) for value in default_frame.iloc[0].tolist()) if not default_frame.empty else ""
         has_grouped_header = any(label in first_row_text for label in ("수량", "금액", "%"))
         if has_grouped_header:
@@ -121,11 +139,15 @@ def read_uploaded_file(uploaded_file) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
-def detect_channel(filename: str) -> str:
+def detect_channel(filename: str, columns: Optional[list[object]] = None) -> str:
     name = filename.lower()
+    column_text = " ".join(clean_name(column) for column in (columns or []))
     if "spscst11" in name or "옥션" in filename:
         return "옥션"
-    if "지마켓" in filename or "gmarket" in name:
+    if "지마켓" in filename or "gmarket" in name or (
+        ("광고비용" in column_text or "광고비" in column_text)
+        and ("판매자전환금액" in column_text or "판매자전환" in column_text)
+    ):
         return "지마켓"
     if "11번가" in filename or "11st" in name:
         return "11번가"
@@ -158,7 +180,10 @@ def normalize_frame(frame: pd.DataFrame, channel: str) -> tuple[pd.DataFrame, li
                 result[key] = [f"상품 {index + 1}" for index in range(len(frame))]
             elif key in ("supply_cost", "platform_fee", "shipping", "file_total_cost"):
                 result[key] = 0
-            elif key in ("direct_orders", "direct_sales", "direct_ad_return"):
+            elif key in (
+                "direct_orders", "direct_sales", "direct_ad_return",
+                "seller_conversion_sales", "seller_conversion_orders",
+            ):
                 result[key] = 0
             else:
                 result[key] = 0
@@ -169,17 +194,52 @@ def normalize_frame(frame: pd.DataFrame, channel: str) -> tuple[pd.DataFrame, li
             result[key] = frame[source].fillna("상품명 없음").astype(str)
         else:
             result[key] = parse_number(frame[source])
-        if key in ("direct_orders", "direct_sales", "direct_ad_return"):
+        if key in (
+            "direct_orders", "direct_sales", "direct_ad_return",
+            "seller_conversion_sales", "seller_conversion_orders",
+        ):
             result[f"{key}_provided"] = source is not None
         if key == "file_total_cost":
             result["file_total_cost_provided"] = source is not None
     if "file_total_cost_provided" not in result:
         result["file_total_cost_provided"] = False
-    for key in ("direct_orders", "direct_sales", "direct_ad_return"):
+    for key in (
+        "direct_orders", "direct_sales", "direct_ad_return",
+        "seller_conversion_sales", "seller_conversion_orders",
+    ):
         if f"{key}_provided" not in result:
             result[f"{key}_provided"] = False
     if "롯데온" in channel:
         result["ad_cost"] = 0
+    if "지마켓" in channel:
+        gmarket_ad_cost = find_column(
+            list(frame.columns),
+            ["광고비용", "광고 비용", "광고비", "광고 비"],
+        )
+        gmarket_sales = find_column(
+            list(frame.columns),
+            ["판매자전환금액", "판매자 전환 금액", "판매자전환 금액"],
+        )
+        gmarket_orders = next(
+            (
+                column for column in frame.columns
+                if "판매자전환" in clean_name(column)
+                and "금액" not in clean_name(column)
+                and "율" not in clean_name(column)
+            ),
+            None,
+        )
+        if gmarket_ad_cost is not None:
+            result["file_total_cost"] = parse_number(frame[gmarket_ad_cost])
+        else:
+            result["file_total_cost"] = result["ad_cost"]
+        result["file_total_cost_provided"] = True
+        if gmarket_sales is not None:
+            result["sales"] = parse_number(frame[gmarket_sales])
+        if gmarket_orders is not None:
+            result["orders"] = parse_number(frame[gmarket_orders])
+        if "상품번호" in frame.columns:
+            result["product"] = frame["상품번호"].fillna("상품번호 없음").astype(str)
     if "11번가" in channel:
         result.loc[result["direct_orders_provided"], "orders"] = result.loc[result["direct_orders_provided"], "direct_orders"]
         result.loc[result["direct_sales_provided"], "sales"] = result.loc[result["direct_sales_provided"], "direct_sales"]
@@ -238,15 +298,18 @@ uploads = st.file_uploader("광고 리포트 업로드 (.xlsx, .csv)", type=["xl
 
 if not uploads:
     st.warning("광고 리포트 파일을 업로드하면 분석이 시작됩니다.")
-    st.markdown("**필수 권장 열:** 상품명, 노출수, 클릭수, 주문수, 광고비, 매출")
+    st.markdown("**필수 권장 열:** 상품번호, 노출수, 클릭수, 주문수, 광고비, 매출")
     st.stop()
 
 frames = []
 issues = []
 for uploaded in uploads:
-    channel = detect_channel(uploaded.name)
     try:
-        normalized, missing = normalize_frame(read_uploaded_file(uploaded), channel)
+        source_frame = read_uploaded_file(uploaded)
+        channel = detect_channel(uploaded.name, list(source_frame.columns))
+        normalized, missing = normalize_frame(source_frame, channel)
+        if "지마켓" in channel:
+            missing = [item for item in missing if item not in ("광고비", "매출")]
         frames.append(normalized)
         if missing:
             issues.append(f"{uploaded.name}: {', '.join(missing)}")
@@ -257,6 +320,7 @@ if not frames:
     st.stop()
 
 combined = pd.concat(frames, ignore_index=True)
+st.caption(f"인식된 채널: {', '.join(sorted(combined['채널'].astype(str).unique()))}")
 try:
     cutoff_month = pd.Period(attachment_date.strftime("%Y-%m"), freq="M")
     valid_months = combined["month"].notna()
@@ -290,7 +354,7 @@ best_sellers, ad_only, needs_improvement = st.columns(3)
 with best_sellers:
     st.markdown("**구매수량 상위 상품**")
     best = analysis.sort_values(["orders", "sales"], ascending=False).head(10)
-    best_display = best[["product", "orders", "sales"]].rename(columns={"product": "상품명", "orders": "구매수", "sales": "구매금액"})
+    best_display = best[["product", "orders", "sales"]].rename(columns={"product": "상품번호", "orders": "구매수", "sales": "구매금액"})
     st.dataframe(format_currency_columns(best_display, ["구매금액"]), use_container_width=True, hide_index=True)
 with ad_only:
     st.markdown("**광고비만 사용하는 상품**")
@@ -298,7 +362,7 @@ with ad_only:
         "총비용", ascending=False
     )
     spenders_display = spenders[["product", "총비용", "sales", "광고판정"]].rename(
-        columns={"product": "상품명", "sales": "구매금액"}
+        columns={"product": "상품번호", "sales": "구매금액"}
     )
     st.dataframe(format_currency_columns(spenders_display, ["총비용", "구매금액"]), use_container_width=True, hide_index=True)
 with needs_improvement:
@@ -306,7 +370,7 @@ with needs_improvement:
     improvements = analysis[analysis["광고판정"] == "상품정보 개선 필요"].sort_values("clicks", ascending=False).head(10)
     st.dataframe(
         improvements[["product", "impressions", "clicks", "orders", "광고판정"]].rename(
-            columns={"product": "상품명", "impressions": "노출수", "clicks": "클릭수", "orders": "구매수"}
+            columns={"product": "상품번호", "impressions": "노출수", "clicks": "클릭수", "orders": "구매수"}
         ),
         use_container_width=True,
         hide_index=True,
@@ -320,7 +384,7 @@ with priority_columns[0]:
     high_sales = analysis[analysis["sales"] > 0].sort_values("sales", ascending=False).head(20)
     st.dataframe(
         format_currency_columns(high_sales[["product", "sales", "orders"]].rename(
-            columns={"product": "상품명", "sales": "구매금액", "orders": "구매수"}
+            columns={"product": "상품번호", "sales": "구매금액", "orders": "구매수"}
         ), ["구매금액"]),
         use_container_width=True,
         hide_index=True,
@@ -333,7 +397,7 @@ with priority_columns[3]:
     ).head(20)
     st.dataframe(
         format_currency_columns(high_conversion[["product", "구매전환율", "orders", "sales"]].rename(
-            columns={"product": "상품명", "구매전환율": "전환율", "orders": "구매수", "sales": "구매금액"}
+            columns={"product": "상품번호", "구매전환율": "전환율", "orders": "구매수", "sales": "구매금액"}
         ), ["구매금액"]),
         use_container_width=True,
         hide_index=True,
@@ -345,7 +409,7 @@ with priority_columns[2]:
         ["총비용", "비용대비구매금액"], ascending=[False, True]
     )
     low_ad_return_display = low_ad_return[["product", "총비용", "sales", "비용대비구매금액"]].rename(
-        columns={"product": "상품명", "sales": "구매금액", "비용대비구매금액": "광고수익율"}
+        columns={"product": "상품번호", "sales": "구매금액", "비용대비구매금액": "광고수익율"}
     )
     low_ad_return_display["광고수익율"] = low_ad_return_display["광고수익율"].round(2).map(lambda value: f"{value:,.2f}%")
     st.dataframe(
@@ -360,7 +424,7 @@ with priority_columns[1]:
         ["총비용", "비용대비구매금액"], ascending=[False, False]
     )
     high_ad_return_display = high_ad_return[["product", "총비용", "sales", "비용대비구매금액"]].rename(
-        columns={"product": "상품명", "sales": "구매금액", "비용대비구매금액": "광고수익율"}
+        columns={"product": "상품번호", "sales": "구매금액", "비용대비구매금액": "광고수익율"}
     )
     high_ad_return_display["광고수익율"] = high_ad_return_display["광고수익율"].round(2).map(lambda value: f"{value:,.2f}%")
     st.dataframe(
@@ -375,7 +439,7 @@ with priority_columns[4]:
         (analysis["impressions"] >= 500) & (analysis["sales"] <= 5000)
     ].sort_values(["impressions", "clicks"], ascending=[False, True])
     low_purchase_display = low_purchase_after_exposure[["product", "impressions", "clicks", "sales"]].rename(
-        columns={"product": "상품명", "impressions": "노출수", "clicks": "클릭수", "sales": "구매금액"}
+        columns={"product": "상품번호", "impressions": "노출수", "clicks": "클릭수", "sales": "구매금액"}
     )
     st.dataframe(
         format_currency_columns(low_purchase_display, ["구매금액"]),
@@ -387,7 +451,7 @@ st.subheader("상품별 분석")
 status = st.multiselect("판정 필터", sorted(analysis["광고판정"].unique()), default=sorted(analysis["광고판정"].unique()))
 filtered = analysis[analysis["광고판정"].isin(status)].copy()
 show = filtered[["채널", "product", "impressions", "clicks", "CTR", "orders", "구매전환율", "sales", "총비용", "비용대비구매금액", "광고판정"]].rename(columns={
-    "product": "상품명", "impressions": "노출수", "clicks": "클릭수", "CTR": "클릭률", "orders": "구매수", "구매전환율": "전환율", "sales": "구매금액", "비용대비구매금액": "광고수익율"
+    "product": "상품번호", "impressions": "노출수", "clicks": "클릭수", "CTR": "클릭률", "orders": "구매수", "구매전환율": "전환율", "sales": "구매금액", "비용대비구매금액": "광고수익율"
 })
 for column in ["클릭률", "전환율", "광고수익율"]:
     show[column] = show[column].round(2)
