@@ -1,16 +1,9 @@
 import io
-import base64
-import hashlib
-import hmac
-import json
-import os
 import re
-import time
-from datetime import date, timedelta
+from datetime import date
 from typing import Optional
 
 import pandas as pd
-import requests
 import streamlit as st
 
 st.set_page_config(page_title="온라인 광고 분석", page_icon="📊", layout="wide")
@@ -144,131 +137,6 @@ def read_uploaded_file(uploaded_file) -> pd.DataFrame:
         else:
             frames.append(default_frame)
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
-
-
-@st.cache_data(ttl=86400, show_spinner=False)
-def fetch_ad_api(endpoint: str, token: str, report_date: str) -> pd.DataFrame:
-    response = requests.get(
-        endpoint,
-        params={"start_date": report_date, "end_date": report_date},
-        headers={"Authorization": f"Bearer {token}"} if token else {},
-        timeout=30,
-    )
-    if not response.ok:
-        raise ValueError(f"네이버 API 오류 {response.status_code}: {response.text[:500]}")
-    payload = response.json()
-    rows = payload.get("data", payload) if isinstance(payload, dict) else payload
-    if not isinstance(rows, list):
-        raise ValueError("API 응답은 배열 또는 data 배열을 포함한 JSON이어야 합니다.")
-    return pd.DataFrame(rows)
-
-
-@st.cache_data(ttl=86400, show_spinner=False)
-def fetch_naver_search_ads(customer_id: str, api_key: str, secret_key: str, campaign_ids: str, start_date: str, end_date: str) -> pd.DataFrame:
-    uri = "/stats"
-    timestamp = str(int(time.time() * 1000))
-    signature_source = f"{timestamp}.GET.{uri}"
-    signature = base64.b64encode(hmac.new(
-        secret_key.encode("utf-8"),
-        signature_source.encode("utf-8"),
-        hashlib.sha256,
-    ).digest()).decode("utf-8")
-    fields = ["impCnt", "clkCnt", "salesAmt", "ccnt"]
-    campaign_id_values = [value.strip() for value in campaign_ids.split(",") if value.strip()]
-    if len(campaign_id_values) != 1:
-        raise ValueError("현재 네이버 검색광고 연동은 한 번에 캠페인 하나만 선택할 수 있습니다.")
-    response = requests.get(
-        f"https://api.searchad.naver.com{uri}",
-        params={
-            "id": campaign_id_values[0],
-            "fields": json.dumps(fields),
-            "timeRange": json.dumps({"since": start_date, "until": end_date}),
-            "timeIncrement": "1",
-        },
-        headers={
-            "X-Timestamp": timestamp,
-            "X-API-KEY": api_key,
-            "X-Customer": customer_id,
-            "X-Signature": signature,
-        },
-        timeout=30,
-    )
-    if not response.ok:
-        raise ValueError(f"네이버 캠페인 API 오류 {response.status_code}: {response.text[:500]}")
-    payload = response.json()
-    rows = payload.get("data", payload) if isinstance(payload, dict) else payload
-    if not isinstance(rows, list):
-        raise ValueError("네이버 API 응답에 data 배열이 없습니다.")
-    return pd.DataFrame(rows)
-
-
-@st.cache_data(ttl=3600, show_spinner=False)
-def fetch_naver_campaigns(customer_id: str, api_key: str, secret_key: str) -> list[dict[str, str]]:
-    uri = "/ncc/campaigns"
-    timestamp = str(int(time.time() * 1000))
-    signature_source = f"{timestamp}.GET.{uri}"
-    signature = base64.b64encode(hmac.new(
-        secret_key.encode("utf-8"),
-        signature_source.encode("utf-8"),
-        hashlib.sha256,
-    ).digest()).decode("utf-8")
-    response = requests.get(
-        f"https://api.searchad.naver.com{uri}",
-        headers={
-            "X-Timestamp": timestamp,
-            "X-API-KEY": api_key,
-            "X-Customer": customer_id,
-            "X-Signature": signature,
-        },
-        timeout=30,
-    )
-    response.raise_for_status()
-    payload = response.json()
-    rows = payload.get("data", payload) if isinstance(payload, dict) else payload
-    if not isinstance(rows, list):
-        raise ValueError("네이버 캠페인 API 응답이 올바른 목록이 아닙니다.")
-    return [
-        {"id": str(row.get("nccCampaignId", row.get("id", ""))), "name": str(row.get("name", "이름 없음"))}
-        for row in rows
-        if row.get("nccCampaignId", row.get("id"))
-    ]
-
-
-def normalize_naver_search_ads(frame: pd.DataFrame, channel: str) -> pd.DataFrame:
-    if "id" in frame.columns and len(frame.index) > 1:
-        numeric_columns = [column for column in ("impCnt", "clkCnt", "ccnt", "salesAmt") if column in frame.columns]
-        if numeric_columns:
-            totals = frame.groupby("id", as_index=False)[numeric_columns].sum()
-            first_dates = frame.groupby("id", as_index=False)["dateStart"].min() if "dateStart" in frame.columns else None
-            frame = totals.merge(first_dates, on="id", how="left") if first_dates is not None else totals
-    def column_or_zero(name: str) -> pd.Series:
-        if name in frame.columns:
-            return frame[name]
-        return pd.Series(0, index=frame.index)
-
-    normalized = pd.DataFrame(index=frame.index)
-    normalized["채널"] = channel
-    normalized["month"] = pd.to_datetime(frame.get("dateStart", pd.Series(index=frame.index)), errors="coerce").dt.to_period("M").astype("string")
-    normalized["product"] = frame.get("id", pd.Series(index=frame.index)).fillna("캠페인").astype(str)
-    normalized["product_id"] = normalized["product"]
-    normalized["impressions"] = parse_number(column_or_zero("impCnt"))
-    normalized["clicks"] = parse_number(column_or_zero("clkCnt"))
-    normalized["orders"] = parse_number(column_or_zero("ccnt"))
-    normalized["direct_orders"] = normalized["orders"]
-    normalized["direct_sales"] = 0
-    normalized["direct_ad_return"] = 0
-    normalized["seller_conversion_sales"] = 0
-    normalized["seller_conversion_orders"] = 0
-    normalized["ad_cost"] = parse_number(column_or_zero("salesAmt"))
-    normalized["sales"] = pd.Series(0, index=frame.index, dtype="float64")
-    normalized["supply_cost"] = 0
-    normalized["platform_fee"] = 0
-    normalized["shipping"] = 0
-    normalized["file_total_cost"] = 0
-    normalized["file_total_cost_provided"] = False
-    for key in ("direct_orders", "direct_sales", "direct_ad_return", "seller_conversion_sales", "seller_conversion_orders"):
-        normalized[f"{key}_provided"] = key == "direct_orders"
-    return normalized
 
 
 def detect_channel(filename: str, columns: Optional[list[object]] = None) -> str:
@@ -414,146 +282,39 @@ def recommend_action(row: pd.Series) -> str:
 
 
 st.title("온라인 쇼핑몰 광고 분석")
-st.caption("광고 API에서 매일 데이터를 받아 상품별 성과와 개선 방향을 확인합니다.")
+st.caption("옥션·지마켓·11번가 광고 리포트를 업로드하면 상품별 성과와 개선 방향을 확인합니다.")
 
 with st.sidebar:
     st.header("분석 설정")
     target_roas = st.number_input("목표 ROAS (%)", min_value=0, value=300, step=50)
-    data_source = st.radio("데이터 가져오기", ["네이버 검색광고", "광고 API 직접연동", "엑셀 업로드"], index=0)
-    analysis_dates = st.date_input(
-        "분석 기간",
-        value=(date.today() - timedelta(days=7), date.today() - timedelta(days=1)),
-        help="네이버 광고센터와 같은 시작일·종료일을 선택하세요.",
+    attachment_date = st.date_input(
+        "파일 첨부 기준일",
+        value=date.today(),
+        help="기본값은 프로그램을 실행한 날짜입니다. 파일에 이 날짜 이후의 자료가 있으면 자동 제외합니다.",
     )
-    if isinstance(analysis_dates, tuple) and len(analysis_dates) == 2:
-        analysis_start, analysis_end = analysis_dates
-    else:
-        analysis_start = analysis_end = analysis_dates
-    if data_source == "네이버 검색광고":
-        secrets_prefix = "NAVER_SEARCH_ADS_"
-        naver_customer_id = os.getenv(f"{secrets_prefix}CUSTOMER_ID", "")
-        naver_api_key = os.getenv(f"{secrets_prefix}API_KEY", "")
-        naver_secret_key = os.getenv(f"{secrets_prefix}SECRET_KEY", "")
-        naver_campaign_ids = os.getenv(f"{secrets_prefix}CAMPAIGN_IDS", "")
-        try:
-            naver_customer_id = naver_customer_id or st.secrets.get(f"{secrets_prefix}CUSTOMER_ID", "")
-            naver_api_key = naver_api_key or st.secrets.get(f"{secrets_prefix}API_KEY", "")
-            naver_secret_key = naver_secret_key or st.secrets.get(f"{secrets_prefix}SECRET_KEY", "")
-            naver_campaign_ids = naver_campaign_ids or st.secrets.get(f"{secrets_prefix}CAMPAIGN_IDS", "")
-        except st.errors.StreamlitSecretNotFoundError:
-            pass
-        naver_customer_id = st.text_input("네이버 CUSTOMER_ID", value=naver_customer_id)
-        naver_api_key = st.text_input("네이버 API_KEY", value=naver_api_key, type="password")
-        naver_secret_key = st.text_input("네이버 SECRET_KEY", value=naver_secret_key, type="password")
-        if st.button("네이버 캠페인 목록 불러오기"):
-            if all((naver_customer_id, naver_api_key, naver_secret_key)):
-                try:
-                    st.session_state["naver_campaigns"] = fetch_naver_campaigns(
-                        naver_customer_id, naver_api_key, naver_secret_key
-                    )
-                except (requests.RequestException, ValueError) as error:
-                    st.error(f"네이버 캠페인 목록을 가져오지 못했습니다: {error}")
-            else:
-                st.warning("CUSTOMER_ID, API_KEY, SECRET_KEY를 먼저 입력하세요.")
-        campaign_options = st.session_state.get("naver_campaigns", [])
-        if campaign_options:
-            selected_campaign_ids = st.multiselect(
-                "분석할 캠페인",
-                options=[campaign["id"] for campaign in campaign_options],
-                format_func=lambda campaign_id: next(
-                    f"{campaign['name']} ({campaign_id})" for campaign in campaign_options if campaign["id"] == campaign_id
-                ),
-            )
-            naver_campaign_ids = ",".join(selected_campaign_ids)
-            if not naver_campaign_ids:
-                st.info("분석할 캠페인을 하나 이상 선택하세요.")
-                st.stop()
-        else:
-            st.info("인증 정보를 입력한 뒤 네이버 캠페인 목록을 먼저 불러오세요.")
-            naver_campaign_ids = ""
-            st.stop()
-    elif data_source == "광고 API 직접연동":
-        api_endpoint = os.getenv("AD_API_ENDPOINT", "")
-        api_token = os.getenv("AD_API_TOKEN", "")
-        api_channel = os.getenv("AD_API_CHANNEL", "광고 API")
-        if not api_endpoint or not api_token:
-            try:
-                api_endpoint = api_endpoint or st.secrets.get("AD_API_ENDPOINT", "")
-                api_token = api_token or st.secrets.get("AD_API_TOKEN", "")
-                api_channel = st.secrets.get("AD_API_CHANNEL", api_channel)
-            except st.errors.StreamlitSecretNotFoundError:
-                pass
-        api_endpoint = st.text_input("광고 API 주소", value=api_endpoint)
-        api_token = st.text_input("API 토큰", value=api_token, type="password")
-        api_channel = st.text_input("광고 채널명", value=api_channel)
-        st.caption("GET 요청에 start_date, end_date를 보내고 JSON 배열 또는 {data: [...]}를 반환하는 API를 사용합니다.")
-    else:
-        naver_customer_id = ""
-        naver_api_key = ""
-        naver_secret_key = ""
-        naver_campaign_ids = ""
-        api_endpoint = ""
-        api_token = ""
-        api_channel = ""
+    st.info("파일 첨부 기준일 이후의 월 자료는 자동으로 제외됩니다.")
 
-uploads = []
+uploads = st.file_uploader("광고 리포트 업로드 (.xlsx, .csv)", type=["xlsx", "xls", "csv"], accept_multiple_files=True)
+
+if not uploads:
+    st.warning("광고 리포트 파일을 업로드하면 분석이 시작됩니다.")
+    st.markdown("**필수 권장 열:** 상품번호, 노출수, 클릭수, 주문수, 광고비, 매출")
+    st.stop()
+
 frames = []
 issues = []
-if data_source == "네이버 검색광고":
-    if not all((naver_customer_id, naver_api_key, naver_secret_key, naver_campaign_ids)):
-        st.info("사이드바에 네이버 인증 정보와 캠페인 ID를 입력하면 분석을 시작할 수 있습니다.")
-        st.markdown("**네이버 API 데이터:** 노출수, 클릭수, 광고비, 전환수, 전환매출")
-        st.stop()
+for uploaded in uploads:
     try:
-        naver_frame = fetch_naver_search_ads(
-            naver_customer_id,
-            naver_api_key,
-            naver_secret_key,
-            naver_campaign_ids,
-            analysis_start.isoformat(),
-            analysis_end.isoformat(),
-        )
-        normalized = normalize_naver_search_ads(naver_frame, "네이버 검색광고")
-        frames.append(normalized)
-        st.success(f"{analysis_start.isoformat()} ~ {analysis_end.isoformat()} 네이버 검색광고 데이터를 가져왔습니다. (행 {len(naver_frame):,}개)")
-    except (requests.RequestException, ValueError) as error:
-        st.error(f"네이버 검색광고 데이터를 가져오지 못했습니다: {error}")
-        st.stop()
-elif data_source == "광고 API 직접연동":
-    if not api_endpoint:
-        st.info("사이드바에 광고 API 주소와 토큰을 입력하면 직접 분석을 시작할 수 있습니다.")
-        st.markdown("**API 응답 필수 권장 열:** 상품번호, 노출수, 클릭수, 주문수, 광고비, 매출")
-        st.stop()
-    try:
-        api_frame = fetch_ad_api(api_endpoint, api_token, analysis_end.isoformat())
-        normalized, missing = normalize_frame(api_frame, api_channel)
+        source_frame = read_uploaded_file(uploaded)
+        channel = detect_channel(uploaded.name, list(source_frame.columns))
+        normalized, missing = normalize_frame(source_frame, channel)
+        if "지마켓" in channel:
+            missing = [item for item in missing if item not in ("광고비", "매출")]
         frames.append(normalized)
         if missing:
-            issues.append(f"API 응답: {', '.join(missing)}")
-        st.success(f"{attachment_date.isoformat()} 광고 데이터를 API에서 가져왔습니다. (행 {len(api_frame):,}개)")
-    except (requests.RequestException, ValueError) as error:
-        st.error(f"광고 API 데이터를 가져오지 못했습니다: {error}")
-        st.stop()
-else:
-    uploads = st.file_uploader("광고 리포트 업로드 (.xlsx, .csv)", type=["xlsx", "xls", "csv"], accept_multiple_files=True)
-    if not uploads:
-        st.warning("광고 리포트 파일을 업로드하면 분석이 시작됩니다.")
-        st.markdown("**필수 권장 열:** 상품번호, 노출수, 클릭수, 주문수, 광고비, 매출")
-        st.stop()
-
-if data_source == "엑셀 업로드":
-    for uploaded in uploads:
-        try:
-            source_frame = read_uploaded_file(uploaded)
-            channel = detect_channel(uploaded.name, list(source_frame.columns))
-            normalized, missing = normalize_frame(source_frame, channel)
-            if "지마켓" in channel:
-                missing = [item for item in missing if item not in ("광고비", "매출")]
-            frames.append(normalized)
-            if missing:
-                issues.append(f"{uploaded.name}: {', '.join(missing)}")
-        except Exception as error:
-            st.error(f"{uploaded.name}을 읽지 못했습니다: {error}")
+            issues.append(f"{uploaded.name}: {', '.join(missing)}")
+    except Exception as error:
+        st.error(f"{uploaded.name}을 읽지 못했습니다: {error}")
 
 if not frames:
     st.stop()
@@ -561,7 +322,7 @@ if not frames:
 combined = pd.concat(frames, ignore_index=True)
 st.caption(f"인식된 채널: {', '.join(sorted(combined['채널'].astype(str).unique()))}")
 try:
-    cutoff_month = pd.Period(analysis_end.strftime("%Y-%m"), freq="M")
+    cutoff_month = pd.Period(attachment_date.strftime("%Y-%m"), freq="M")
     valid_months = combined["month"].notna()
     combined.loc[valid_months, "month_period"] = combined.loc[valid_months, "month"].map(lambda value: pd.Period(value, freq="M"))
     combined = combined[~valid_months | (combined["month_period"] <= cutoff_month)]
