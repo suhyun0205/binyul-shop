@@ -32,10 +32,24 @@
   }
   .header-inner {
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: center;
+  }
+  .header-bottom {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
+  }
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
   }
   .brand {
     display: flex;
@@ -121,7 +135,33 @@
     cursor: pointer;
     line-height: 1;
   }
-  .auth-form input {
+  .auth-tabs {
+    display: flex;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 16px;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: #999999;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .auth-tab.active {
+    color: #E5384D;
+    font-weight: bold;
+    border-bottom: 2px solid #E5384D;
+  }
+  .auth-view {
+    display: none;
+  }
+  .auth-view.active {
+    display: block;
+  }
+  .auth-view input {
     width: 100%;
     padding: 10px 12px;
     margin-bottom: 10px;
@@ -129,17 +169,13 @@
     border-radius: 8px;
     font-size: 14px;
   }
-  .auth-btn-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .auth-btn-row button {
-    flex: 1;
+  .auth-submit-btn {
+    width: 100%;
     padding: 10px;
     border-radius: 15px;
     font-size: 14px;
     cursor: pointer;
+    margin-bottom: 10px;
   }
   .auth-signup-btn {
     border: 1px solid #F1B57C;
@@ -545,16 +581,22 @@
   <!-- 상단: 쇼핑몰 로고와 이름 -->
   <header>
     <div class="wrap header-inner">
-      <div class="brand">
-        <span class="brand-logo">🏠</span>
-        <div>
-          <h1>빈이율이 shop</h1>
-          <p>주방·욕실·생활용품 셀렉트 샵</p>
+      <div class="header-top">
+        <div class="brand">
+          <span class="brand-logo">🏠</span>
+          <div>
+            <h1>빈이율이 shop</h1>
+            <p>주방·욕실·생활용품 셀렉트 샵</p>
+          </div>
         </div>
       </div>
-      <div class="header-stats">스토어찜 1,204 · 톡톡친구 8,320</div>
-      <button class="cart-widget" id="auth-widget" onclick="toggleAuth()">로그인/회원가입</button>
-      <button class="cart-widget" onclick="toggleCart()">🛒 장바구니 <span id="cart-count">0</span></button>
+      <div class="header-bottom">
+        <div class="header-stats">스토어찜 1,204 · 톡톡친구 8,320</div>
+        <div class="header-actions">
+          <button class="cart-widget" id="auth-widget" onclick="toggleAuth()">로그인/회원가입</button>
+          <button class="cart-widget" onclick="toggleCart()">🛒 장바구니 <span id="cart-count">0</span></button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -565,16 +607,27 @@
         <h2>로그인 / 회원가입</h2>
         <button class="cart-modal-close" onclick="toggleAuth()">✕</button>
       </div>
-      <div class="auth-form">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-tab-login" onclick="showAuthView('login')">로그인</button>
+        <button class="auth-tab" id="auth-tab-signup" onclick="showAuthView('signup')">회원가입</button>
+      </div>
+
+      <!-- 로그인 화면 -->
+      <div class="auth-view active" id="auth-view-login">
+        <input type="email" id="login-email" placeholder="이메일">
+        <input type="password" id="login-password" placeholder="비밀번호">
+        <button class="auth-submit-btn auth-login-btn" onclick="handleSignIn()">로그인</button>
+        <div id="login-message" class="auth-message"></div>
+      </div>
+
+      <!-- 회원가입 화면 -->
+      <div class="auth-view" id="auth-view-signup">
         <input type="text" id="auth-name" placeholder="이름">
         <input type="email" id="auth-email" placeholder="이메일">
         <input type="password" id="auth-password" placeholder="비밀번호">
         <input type="password" id="auth-password-confirm" placeholder="비밀번호 확인">
-        <div class="auth-btn-row">
-          <button class="auth-signup-btn" onclick="handleSignUp()">회원가입</button>
-          <button class="auth-login-btn" onclick="handleSignIn()">로그인</button>
-        </div>
-        <div id="auth-message" class="auth-message"></div>
+        <button class="auth-submit-btn auth-signup-btn" onclick="handleSignUp()">회원가입</button>
+        <div id="signup-message" class="auth-message"></div>
       </div>
     </div>
   </div>
@@ -873,6 +926,15 @@
       }
     }
 
+    // 로그인/회원가입 탭 전환
+    function showAuthView(view) {
+      var isLogin = view === 'login';
+      document.getElementById('auth-view-login').classList.toggle('active', isLogin);
+      document.getElementById('auth-view-signup').classList.toggle('active', !isLogin);
+      document.getElementById('auth-tab-login').classList.toggle('active', isLogin);
+      document.getElementById('auth-tab-signup').classList.toggle('active', !isLogin);
+    }
+
     // Supabase 인증 에러 메시지를 한국어로 변환
     function translateAuthError(message) {
       var map = {
@@ -885,9 +947,9 @@
       return map[message] || ('오류가 발생했습니다: ' + message);
     }
 
-    // 인증 모달의 안내 문구 표시
-    function showAuthMessage(text, isError) {
-      var msgEl = document.getElementById('auth-message');
+    // 인증 화면의 안내 문구 표시
+    function showAuthMessage(elementId, text, isError) {
+      var msgEl = document.getElementById(elementId);
       msgEl.textContent = text;
       msgEl.className = 'auth-message' + (isError ? ' error' : ' success');
     }
@@ -900,11 +962,11 @@
       var passwordConfirm = document.getElementById('auth-password-confirm').value;
 
       if (!name) {
-        showAuthMessage('이름을 입력해주세요.', true);
+        showAuthMessage('signup-message', '이름을 입력해주세요.', true);
         return;
       }
       if (password !== passwordConfirm) {
-        showAuthMessage('비밀번호가 일치하지 않습니다.', true);
+        showAuthMessage('signup-message', '비밀번호가 일치하지 않습니다.', true);
         return;
       }
 
@@ -914,24 +976,24 @@
         options: { data: { name: name } }
       }).then(function (result) {
         if (result.error) {
-          showAuthMessage(translateAuthError(result.error.message), true);
+          showAuthMessage('signup-message', translateAuthError(result.error.message), true);
         } else {
-          showAuthMessage('가입이 완료되었습니다', false);
+          showAuthMessage('signup-message', '가입이 완료되었습니다', false);
         }
       });
     }
 
     // 로그인 버튼 클릭
     function handleSignIn() {
-      var email = document.getElementById('auth-email').value.trim();
-      var password = document.getElementById('auth-password').value;
+      var email = document.getElementById('login-email').value.trim();
+      var password = document.getElementById('login-password').value;
 
       supabaseClient.auth.signInWithPassword({ email: email, password: password }).then(function (result) {
         if (result.error) {
-          showAuthMessage(translateAuthError(result.error.message), true);
+          showAuthMessage('login-message', translateAuthError(result.error.message), true);
         } else {
-          showAuthMessage('로그인되었습니다', false);
-          toggleAuth();
+          showAuthMessage('login-message', '로그인 되었습니다', false);
+          setTimeout(toggleAuth, 800);
         }
       });
     }
