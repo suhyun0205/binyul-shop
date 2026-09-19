@@ -65,6 +65,62 @@
     font-size: 12px;
     color: #999999;
   }
+  .cart-widget {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    background-color: #FCE9D8;
+    color: #C97B4A;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .cart-widget #cart-count {
+    color: #E5384D;
+  }
+  .cart-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .cart-modal-overlay.open {
+    display: flex;
+  }
+  .cart-modal {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 22px;
+    width: 380px;
+    max-width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .cart-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .cart-modal-head h2 {
+    font-size: 17px;
+  }
+  .cart-modal-close {
+    border: none;
+    background: none;
+    font-size: 18px;
+    color: #888888;
+    cursor: pointer;
+    line-height: 1;
+  }
 
   /* 카테고리 메뉴 (필터 겸용) */
   nav {
@@ -168,6 +224,26 @@
   }
   .card .photo-wrap {
     position: relative;
+  }
+  .card .btn-row {
+    display: flex;
+    gap: 8px;
+  }
+  .card .btn-row button {
+    width: auto;
+    flex: 1;
+  }
+  .card .cart-btn {
+    border: 1px solid #F1B57C;
+    border-radius: 15px;
+    background-color: #ffffff;
+    color: #C97B4A;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .card .cart-btn:hover {
+    background-color: #FDF3E9;
   }
   .card .badge {
     position: absolute;
@@ -289,6 +365,101 @@
     background-color: #C97B4A;
   }
 
+  /* 장바구니 */
+  .cart-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 14px;
+  }
+  .cart-item:last-child {
+    border-bottom: none;
+  }
+  .cart-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .cart-item-name {
+    font-weight: bold;
+  }
+  .cart-item-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #666666;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .qty-btn:hover {
+    background-color: #f5f5f5;
+  }
+  .qty-btn:disabled {
+    color: #dddddd;
+    cursor: not-allowed;
+  }
+  .qty-value {
+    min-width: 16px;
+    text-align: center;
+    font-size: 13px;
+  }
+  .cart-item-price {
+    color: #E5384D;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: right;
+  }
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 14px;
+    border-top: 2px solid #333333;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .cart-total .cart-total-amount {
+    color: #E5384D;
+  }
+  .cart-remove-btn {
+    padding: 4px 12px;
+    border: 1px solid #cccccc;
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: #666666;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .cart-remove-btn:hover {
+    background-color: #f5f5f5;
+  }
+  .cart-empty {
+    color: #999999;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px 0;
+  }
+
   /* 쇼핑몰 소개 */
   .intro {
     text-align: center;
@@ -334,8 +505,22 @@
         </div>
       </div>
       <div class="header-stats">스토어찜 1,204 · 톡톡친구 8,320</div>
+      <button class="cart-widget" onclick="toggleCart()">🛒 장바구니 <span id="cart-count">0</span></button>
     </div>
   </header>
+
+  <!-- 장바구니 모달 -->
+  <div class="cart-modal-overlay" id="cart-modal-overlay" onclick="closeCartOnOverlay(event)">
+    <div class="cart-modal">
+      <div class="cart-modal-head">
+        <h2>🛒 장바구니</h2>
+        <button class="cart-modal-close" onclick="toggleCart()">✕</button>
+      </div>
+      <div id="cart-list">
+        <div class="cart-empty">담긴 상품이 없습니다</div>
+      </div>
+    </div>
+  </div>
 
   <!-- 메뉴: 카테고리 필터 겸용 -->
   <nav>
@@ -387,7 +572,10 @@
       </div>
       <div class="rating">★4.8 <span class="review-count">(128)</span><span class="wish-count" data-count="46">♥ 46</span></div>
       <div class="tags">#신상 #브런치템</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="bath">
@@ -409,7 +597,10 @@
       </div>
       <div class="rating">★4.6 <span class="review-count">(54)</span><span class="wish-count" data-count="21">♥ 21</span></div>
       <div class="tags">#욕실템 #수압강화</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="life">
@@ -431,7 +622,10 @@
       </div>
       <div class="rating">★4.5 <span class="review-count">(201)</span><span class="wish-count" data-count="58">♥ 58</span></div>
       <div class="tags">#수납꿀템 #생활용품</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="kitchen">
@@ -454,7 +648,10 @@
       </div>
       <div class="rating">★4.9 <span class="review-count">(312)</span><span class="wish-count" data-count="73">♥ 73</span></div>
       <div class="tags">#베스트 #주방소품</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="bath">
@@ -476,7 +673,10 @@
       </div>
       <div class="rating">★4.7 <span class="review-count">(89)</span><span class="wish-count" data-count="34">♥ 34</span></div>
       <div class="tags">#욕실템 #선물추천</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="life">
@@ -498,7 +698,10 @@
       </div>
       <div class="rating">★4.4 <span class="review-count">(37)</span><span class="wish-count" data-count="12">♥ 12</span></div>
       <div class="tags">#생활가전 #청소템</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="kitchen">
@@ -520,7 +723,10 @@
       </div>
       <div class="rating">★4.6 <span class="review-count">(76)</span><span class="wish-count" data-count="27">♥ 27</span></div>
       <div class="tags">#주방소품 #원목</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
 
     <div class="card" data-category="bath">
@@ -542,7 +748,10 @@
       </div>
       <div class="rating">★4.3 <span class="review-count">(152)</span><span class="wish-count" data-count="40">♥ 40</span></div>
       <div class="tags">#욕실템 #가성비</div>
-      <button onclick="showAlert('장바구니에 담았습니다!')">구매하기</button>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
     </div>
   </section>
 
@@ -571,6 +780,105 @@
     // 버튼 클릭 시 알림창 띄우기
     function showAlert(message) {
       alert(message);
+    }
+
+    // 장바구니에 담긴 상품 목록 (상품명 -> 수량)
+    var cart = [];
+
+    // 상단 장바구니 버튼 클릭 시 모달 열기/닫기
+    function toggleCart() {
+      document.getElementById('cart-modal-overlay').classList.toggle('open');
+    }
+
+    // 모달 바깥(어두운 배경) 클릭 시 닫기
+    function closeCartOnOverlay(event) {
+      if (event.target.id === 'cart-modal-overlay') {
+        toggleCart();
+      }
+    }
+
+    // 장바구니 버튼 클릭 시 담기
+    function addToCart(btn) {
+      var card = btn.closest('.card');
+      var name = card.querySelector('h3').textContent.trim();
+      var priceText = card.querySelector('.price').textContent.trim();
+      var priceValue = parseInt(priceText.replace(/[^0-9]/g, ''), 10);
+
+      var existing = cart.find(function (item) { return item.name === name; });
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name: name, priceValue: priceValue, qty: 1 });
+      }
+
+      renderCart();
+      showAlert('장바구니에 담았습니다!');
+    }
+
+    // 수량 [+] 버튼 클릭 시 1 증가
+    function increaseQty(index) {
+      cart[index].qty += 1;
+      renderCart();
+    }
+
+    // 수량 [-] 버튼 클릭 시 1 감소 (1보다 작아지지 않음)
+    function decreaseQty(index) {
+      if (cart[index].qty > 1) {
+        cart[index].qty -= 1;
+        renderCart();
+      }
+    }
+
+    // 장바구니 줄의 삭제 버튼 클릭 시 해당 상품 전체 삭제
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    // 장바구니 목록, 소계, 합계, 상단 개수를 화면에 반영
+    function renderCart() {
+      var listEl = document.getElementById('cart-list');
+      var countEl = document.getElementById('cart-count');
+      var totalQty = cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
+      countEl.textContent = totalQty;
+
+      if (cart.length === 0) {
+        listEl.innerHTML = '<div class="cart-empty">담긴 상품이 없습니다</div>';
+        return;
+      }
+
+      var grandTotal = 0;
+      var rowsHtml = cart.map(function (item, index) {
+        var subtotal = item.priceValue * item.qty;
+        grandTotal += subtotal;
+        var priceText = item.qty > 1
+          ? item.priceValue.toLocaleString() + '원 × ' + item.qty + ' = ' + subtotal.toLocaleString() + '원'
+          : item.priceValue.toLocaleString() + '원';
+        return (
+          '<div class="cart-item">' +
+            '<div class="cart-item-top">' +
+              '<span class="cart-item-name">' + item.name + '</span>' +
+              '<button class="cart-remove-btn" onclick="removeItem(' + index + ')">삭제</button>' +
+            '</div>' +
+            '<div class="cart-item-bottom">' +
+              '<div class="qty-stepper">' +
+                '<button class="qty-btn" onclick="decreaseQty(' + index + ')"' + (item.qty <= 1 ? ' disabled' : '') + '>-</button>' +
+                '<span class="qty-value">' + item.qty + '</span>' +
+                '<button class="qty-btn" onclick="increaseQty(' + index + ')">+</button>' +
+              '</div>' +
+              '<span class="cart-item-price">' + priceText + '</span>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      var totalHtml =
+        '<div class="cart-total">' +
+          '<span>총 합계</span>' +
+          '<span class="cart-total-amount">' + grandTotal.toLocaleString() + '원</span>' +
+        '</div>';
+
+      listEl.innerHTML = rowsHtml + totalHtml;
     }
 
     // 하트 버튼 클릭 시 찜하기 토글
