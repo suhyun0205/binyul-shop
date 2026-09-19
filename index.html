@@ -127,6 +127,24 @@
   .cart-modal-head h2 {
     font-size: 17px;
   }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    background-color: #333333;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 2000;
+  }
+  .toast.show {
+    opacity: 1;
+  }
   .cart-modal-close {
     border: none;
     background: none;
@@ -578,6 +596,9 @@
 </head>
 <body>
 
+  <!-- 짧게 보였다 사라지는 알림 -->
+  <div class="toast" id="toast"></div>
+
   <!-- 상단: 쇼핑몰 로고와 이름 -->
   <header>
     <div class="wrap header-inner">
@@ -998,9 +1019,22 @@
       });
     }
 
+    // 짧게 보였다 사라지는 알림 표시
+    function showToast(text) {
+      var toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(function () {
+        toast.classList.remove('show');
+      }, 1500);
+    }
+
     // 로그아웃 (로그인 상태에서 상단 버튼 클릭 시)
     function handleSignOut() {
-      supabaseClient.auth.signOut();
+      supabaseClient.auth.signOut().then(function () {
+        showToast('로그아웃되었습니다.');
+      });
     }
 
     // 로그인 상태에 따라 상단 버튼 표시 갱신
