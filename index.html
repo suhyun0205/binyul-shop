@@ -695,208 +695,8 @@
   </div>
 
   <!-- 상품 카드 8개 -->
-  <section class="products">
-    <div class="card" data-category="kitchen">
-      <div class="photo-wrap">
-        <img class="photo" src="images/egg-pan.jpg" alt="4구 에그팬 팬케이크팬">
-        <span class="badge">신상제품</span>
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3><a href="product-egg-pan.html" style="color:inherit; text-decoration:none;">4구 에그팬 팬케이크팬</a></h3>
-      <div class="old-price">29,900원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">25,400원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.8 <span class="review-count">(128)</span><span class="wish-count" data-count="46">♥ 46</span></div>
-      <div class="tags">#신상 #브런치템</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="bath">
-      <div class="photo-wrap">
-        <img class="photo" src="images/shower-set.jpg" alt="욕실 샤워기 세트">
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>욕실 샤워기 세트</h3>
-      <div class="old-price">39,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">33,200원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.6 <span class="review-count">(54)</span><span class="wish-count" data-count="21">♥ 21</span></div>
-      <div class="tags">#욕실템 #수압강화</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="life">
-      <div class="photo-wrap">
-        <img class="photo" src="images/storage-basket.jpg" alt="다용도 정리 바구니">
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>다용도 정리 바구니</h3>
-      <div class="old-price">15,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">12,800원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.5 <span class="review-count">(201)</span><span class="wish-count" data-count="58">♥ 58</span></div>
-      <div class="tags">#수납꿀템 #생활용품</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="kitchen">
-      <div class="photo-wrap">
-        <img class="photo" src="images/oven-mitts.jpg" alt="주방 오븐장갑">
-        <span class="badge">베스트제품</span>
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>귀여운 도트 오븐장갑</h3>
-      <div class="old-price">15,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">12,800원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.9 <span class="review-count">(312)</span><span class="wish-count" data-count="73">♥ 73</span></div>
-      <div class="tags">#베스트 #주방소품</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="bath">
-      <div class="photo-wrap">
-        <img class="photo" src="images/beach-towel.jpg" alt="극세사 타올가운">
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>극세사 스트라이프 타올가운</h3>
-      <div class="old-price">22,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">18,700원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.7 <span class="review-count">(89)</span><span class="wish-count" data-count="34">♥ 34</span></div>
-      <div class="tags">#욕실템 #선물추천</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="life">
-      <div class="photo-wrap">
-        <img class="photo" src="images/vacuum.jpg" alt="무선 청소기">
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>무선 로봇 청소기</h3>
-      <div class="old-price">89,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">75,700원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.4 <span class="review-count">(37)</span><span class="wish-count" data-count="12">♥ 12</span></div>
-      <div class="tags">#생활가전 #청소템</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="kitchen">
-      <div class="photo-wrap">
-        <img class="photo" src="images/cutting-board.jpg" alt="원목 도마">
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>원목 주방 도마</h3>
-      <div class="old-price">18,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">15,300원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.6 <span class="review-count">(76)</span><span class="wish-count" data-count="27">♥ 27</span></div>
-      <div class="tags">#주방소품 #원목</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
-
-    <div class="card" data-category="bath">
-      <div class="photo-wrap">
-        <img class="photo" src="images/shower-ball.jpg" alt="샤워볼">
-        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
-      </div>
-      <h3>거품 샤워볼</h3>
-      <div class="old-price">6,000원</div>
-      <div class="price-row">
-        <span class="discount-rate">15%</span>
-        <span class="price">5,100원</span>
-        <span class="ship-fee">🚚 3,000원</span>
-      </div>
-      <div class="delivery-row">
-        <span class="delivery-badge">🚚</span>
-        <span class="delivery-label">배송</span>
-        <span>9/8(화) 도착</span>
-      </div>
-      <div class="rating">★4.3 <span class="review-count">(152)</span><span class="wish-count" data-count="40">♥ 40</span></div>
-      <div class="tags">#욕실템 #가성비</div>
-      <div class="btn-row">
-        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
-        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
-      </div>
-    </div>
+  <section class="products" id="products-list">
+    <div class="cart-empty">상품을 불러오는 중...</div>
   </section>
 
   <!-- 쇼핑몰 소개 -->
@@ -934,6 +734,56 @@
       'https://zcxzelfnshxzbenorblj.supabase.co',
       'sb_publishable_Dai0tnACM-C1F-vjMlMYKg_KmsZKeNi'
     );
+
+    // 상품 카드 하나의 HTML 생성
+    function buildProductCardHtml(p) {
+      var badgeHtml = p.badge ? '<span class="badge">' + p.badge + '</span>' : '';
+      var nameHtml = p.detail_url
+        ? '<a href="' + p.detail_url + '" style="color:inherit; text-decoration:none;">' + p.name + '</a>'
+        : p.name;
+
+      return (
+        '<div class="card" data-category="' + p.category + '" data-id="' + p.id + '">' +
+          '<div class="photo-wrap">' +
+            '<img class="photo" src="' + p.image_url + '" alt="' + p.name + '">' +
+            badgeHtml +
+            '<button class="wish-btn" onclick="toggleWish(this)">♥</button>' +
+          '</div>' +
+          '<h3>' + nameHtml + '</h3>' +
+          '<div class="old-price">' + p.old_price.toLocaleString() + '원</div>' +
+          '<div class="price-row">' +
+            '<span class="discount-rate">' + p.discount_rate + '%</span>' +
+            '<span class="price">' + p.price.toLocaleString() + '원</span>' +
+            '<span class="ship-fee">🚚 3,000원</span>' +
+          '</div>' +
+          '<div class="delivery-row">' +
+            '<span class="delivery-badge">🚚</span>' +
+            '<span class="delivery-label">배송</span>' +
+            '<span>9/8(화) 도착</span>' +
+          '</div>' +
+          '<div class="rating">★' + Number(p.rating) + ' <span class="review-count">(' + p.review_count + ')</span><span class="wish-count" data-count="' + p.wish_count + '">♥ ' + p.wish_count + '</span></div>' +
+          '<div class="tags">' + p.tags + '</div>' +
+          '<div class="btn-row">' +
+            '<button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>' +
+            '<button onclick="showAlert(\'구매되었습니다!\')">구매하기</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    // Supabase에서 상품 목록을 불러와 화면에 그리기
+    function loadProducts() {
+      var listEl = document.getElementById('products-list');
+      supabaseClient.from('products').select('*').order('id').then(function (result) {
+        if (result.error) {
+          listEl.innerHTML = '<div class="cart-empty">상품을 불러오지 못했습니다.</div>';
+          return;
+        }
+        listEl.innerHTML = result.data.map(buildProductCardHtml).join('');
+      });
+    }
+
+    loadProducts();
 
     // 로그인/회원가입 모달 열기/닫기
     function toggleAuth() {
@@ -1037,6 +887,9 @@
       });
     }
 
+    // 현재 로그인한 사용자 (비로그인 상태면 null)
+    var currentUser = null;
+
     // 로그인 상태에 따라 상단 버튼 표시 갱신
     function updateAuthWidget(user) {
       var widget = document.getElementById('auth-widget');
@@ -1050,11 +903,62 @@
     }
 
     supabaseClient.auth.onAuthStateChange(function (event, session) {
-      updateAuthWidget(session ? session.user : null);
+      var user = session ? session.user : null;
+      currentUser = user;
+      updateAuthWidget(user);
+
+      if (user) {
+        loadCartFromServer();
+      } else {
+        cart = [];
+        renderCart();
+      }
     });
 
-    // 장바구니에 담긴 상품 목록 (상품명 -> 수량)
+    // 장바구니에 담긴 상품 목록 (로그인 시 Supabase의 cart_items 테이블과 동기화됨)
     var cart = [];
+
+    // 로그인한 사용자의 장바구니를 Supabase에서 불러오기
+    function loadCartFromServer() {
+      supabaseClient
+        .from('cart_items')
+        .select('product_id, quantity, products (name, price)')
+        .then(function (result) {
+          if (result.error || !result.data) {
+            return;
+          }
+          cart = result.data.map(function (row) {
+            return {
+              productId: row.product_id,
+              name: row.products.name,
+              priceValue: row.products.price,
+              qty: row.quantity
+            };
+          });
+          renderCart();
+        });
+    }
+
+    // 서버에 담긴 상품의 수량을 반영 (없으면 새로 생성, 있으면 수량 갱신)
+    function syncCartItemToServer(productId, quantity) {
+      if (!currentUser) {
+        return;
+      }
+      supabaseClient.from('cart_items').upsert(
+        { user_id: currentUser.id, product_id: productId, quantity: quantity },
+        { onConflict: 'user_id,product_id' }
+      );
+    }
+
+    // 서버에서 장바구니 줄 삭제
+    function deleteCartItemFromServer(productId) {
+      if (!currentUser) {
+        return;
+      }
+      supabaseClient.from('cart_items').delete()
+        .eq('user_id', currentUser.id)
+        .eq('product_id', productId);
+    }
 
     // 상단 장바구니 버튼 클릭 시 모달 열기/닫기
     function toggleCart() {
@@ -1071,25 +975,29 @@
     // 장바구니 버튼 클릭 시 담기
     function addToCart(btn) {
       var card = btn.closest('.card');
+      var productId = parseInt(card.dataset.id, 10);
       var name = card.querySelector('h3').textContent.trim();
       var priceText = card.querySelector('.price').textContent.trim();
       var priceValue = parseInt(priceText.replace(/[^0-9]/g, ''), 10);
 
-      var existing = cart.find(function (item) { return item.name === name; });
+      var existing = cart.find(function (item) { return item.productId === productId; });
       if (existing) {
         existing.qty += 1;
       } else {
-        cart.push({ name: name, priceValue: priceValue, qty: 1 });
+        existing = { productId: productId, name: name, priceValue: priceValue, qty: 1 };
+        cart.push(existing);
       }
 
       renderCart();
       showAlert('장바구니에 담았습니다!');
+      syncCartItemToServer(productId, existing.qty);
     }
 
     // 수량 [+] 버튼 클릭 시 1 증가
     function increaseQty(index) {
       cart[index].qty += 1;
       renderCart();
+      syncCartItemToServer(cart[index].productId, cart[index].qty);
     }
 
     // 수량 [-] 버튼 클릭 시 1 감소 (1보다 작아지지 않음)
@@ -1097,13 +1005,16 @@
       if (cart[index].qty > 1) {
         cart[index].qty -= 1;
         renderCart();
+        syncCartItemToServer(cart[index].productId, cart[index].qty);
       }
     }
 
     // 장바구니 줄의 삭제 버튼 클릭 시 해당 상품 전체 삭제
     function removeItem(index) {
+      var productId = cart[index].productId;
       cart.splice(index, 1);
       renderCart();
+      deleteCartItemFromServer(productId);
     }
 
     // 장바구니 목록, 소계, 합계, 상단 개수를 화면에 반영
