@@ -695,8 +695,208 @@
   </div>
 
   <!-- 상품 카드 8개 -->
-  <section class="products" id="products-list">
-    <div class="cart-empty">상품을 불러오는 중...</div>
+  <section class="products">
+    <div class="card" data-category="kitchen" data-id="1">
+      <div class="photo-wrap">
+        <img class="photo" src="images/egg-pan.jpg" alt="4구 에그팬 팬케이크팬">
+        <span class="badge">신상제품</span>
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3><a href="product-egg-pan.html" style="color:inherit; text-decoration:none;">4구 에그팬 팬케이크팬</a></h3>
+      <div class="old-price">29,900원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">25,400원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.8 <span class="review-count">(128)</span><span class="wish-count" data-count="46">♥ 46</span></div>
+      <div class="tags">#신상 #브런치템</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="bath" data-id="2">
+      <div class="photo-wrap">
+        <img class="photo" src="images/shower-set.jpg" alt="욕실 샤워기 세트">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>욕실 샤워기 세트</h3>
+      <div class="old-price">39,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">33,200원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.6 <span class="review-count">(54)</span><span class="wish-count" data-count="21">♥ 21</span></div>
+      <div class="tags">#욕실템 #수압강화</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="life" data-id="3">
+      <div class="photo-wrap">
+        <img class="photo" src="images/storage-basket.jpg" alt="다용도 정리 바구니">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>다용도 정리 바구니</h3>
+      <div class="old-price">15,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">12,800원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.5 <span class="review-count">(201)</span><span class="wish-count" data-count="58">♥ 58</span></div>
+      <div class="tags">#수납꿀템 #생활용품</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="kitchen" data-id="4">
+      <div class="photo-wrap">
+        <img class="photo" src="images/oven-mitts.jpg" alt="주방 오븐장갑">
+        <span class="badge">베스트제품</span>
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>귀여운 도트 오븐장갑</h3>
+      <div class="old-price">15,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">12,800원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.9 <span class="review-count">(312)</span><span class="wish-count" data-count="73">♥ 73</span></div>
+      <div class="tags">#베스트 #주방소품</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="bath" data-id="5">
+      <div class="photo-wrap">
+        <img class="photo" src="images/beach-towel.jpg" alt="극세사 타올가운">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>극세사 스트라이프 타올가운</h3>
+      <div class="old-price">22,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">18,700원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.7 <span class="review-count">(89)</span><span class="wish-count" data-count="34">♥ 34</span></div>
+      <div class="tags">#욕실템 #선물추천</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="life" data-id="6">
+      <div class="photo-wrap">
+        <img class="photo" src="images/vacuum.jpg" alt="무선 청소기">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>무선 로봇 청소기</h3>
+      <div class="old-price">89,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">75,700원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.4 <span class="review-count">(37)</span><span class="wish-count" data-count="12">♥ 12</span></div>
+      <div class="tags">#생활가전 #청소템</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="kitchen" data-id="7">
+      <div class="photo-wrap">
+        <img class="photo" src="images/cutting-board.jpg" alt="원목 도마">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>원목 주방 도마</h3>
+      <div class="old-price">18,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">15,300원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.6 <span class="review-count">(76)</span><span class="wish-count" data-count="27">♥ 27</span></div>
+      <div class="tags">#주방소품 #원목</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
+
+    <div class="card" data-category="bath" data-id="8">
+      <div class="photo-wrap">
+        <img class="photo" src="images/shower-ball.jpg" alt="샤워볼">
+        <button class="wish-btn" onclick="toggleWish(this)">♥</button>
+      </div>
+      <h3>거품 샤워볼</h3>
+      <div class="old-price">6,000원</div>
+      <div class="price-row">
+        <span class="discount-rate">15%</span>
+        <span class="price">5,100원</span>
+        <span class="ship-fee">🚚 3,000원</span>
+      </div>
+      <div class="delivery-row">
+        <span class="delivery-badge">🚚</span>
+        <span class="delivery-label">배송</span>
+        <span>9/8(화) 도착</span>
+      </div>
+      <div class="rating">★4.3 <span class="review-count">(152)</span><span class="wish-count" data-count="40">♥ 40</span></div>
+      <div class="tags">#욕실템 #가성비</div>
+      <div class="btn-row">
+        <button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>
+        <button onclick="showAlert('구매되었습니다!')">구매하기</button>
+      </div>
+    </div>
   </section>
 
   <!-- 쇼핑몰 소개 -->
@@ -734,56 +934,6 @@
       'https://zcxzelfnshxzbenorblj.supabase.co',
       'sb_publishable_Dai0tnACM-C1F-vjMlMYKg_KmsZKeNi'
     );
-
-    // 상품 카드 하나의 HTML 생성
-    function buildProductCardHtml(p) {
-      var badgeHtml = p.badge ? '<span class="badge">' + p.badge + '</span>' : '';
-      var nameHtml = p.detail_url
-        ? '<a href="' + p.detail_url + '" style="color:inherit; text-decoration:none;">' + p.name + '</a>'
-        : p.name;
-
-      return (
-        '<div class="card" data-category="' + p.category + '" data-id="' + p.id + '">' +
-          '<div class="photo-wrap">' +
-            '<img class="photo" src="' + p.image_url + '" alt="' + p.name + '">' +
-            badgeHtml +
-            '<button class="wish-btn" onclick="toggleWish(this)">♥</button>' +
-          '</div>' +
-          '<h3>' + nameHtml + '</h3>' +
-          '<div class="old-price">' + p.old_price.toLocaleString() + '원</div>' +
-          '<div class="price-row">' +
-            '<span class="discount-rate">' + p.discount_rate + '%</span>' +
-            '<span class="price">' + p.price.toLocaleString() + '원</span>' +
-            '<span class="ship-fee">🚚 3,000원</span>' +
-          '</div>' +
-          '<div class="delivery-row">' +
-            '<span class="delivery-badge">🚚</span>' +
-            '<span class="delivery-label">배송</span>' +
-            '<span>9/8(화) 도착</span>' +
-          '</div>' +
-          '<div class="rating">★' + Number(p.rating) + ' <span class="review-count">(' + p.review_count + ')</span><span class="wish-count" data-count="' + p.wish_count + '">♥ ' + p.wish_count + '</span></div>' +
-          '<div class="tags">' + p.tags + '</div>' +
-          '<div class="btn-row">' +
-            '<button class="cart-btn" onclick="addToCart(this)">🛒 장바구니</button>' +
-            '<button onclick="showAlert(\'구매되었습니다!\')">구매하기</button>' +
-          '</div>' +
-        '</div>'
-      );
-    }
-
-    // Supabase에서 상품 목록을 불러와 화면에 그리기
-    function loadProducts() {
-      var listEl = document.getElementById('products-list');
-      supabaseClient.from('products').select('*').order('id').then(function (result) {
-        if (result.error) {
-          listEl.innerHTML = '<div class="cart-empty">상품을 불러오지 못했습니다.</div>';
-          return;
-        }
-        listEl.innerHTML = result.data.map(buildProductCardHtml).join('');
-      });
-    }
-
-    loadProducts();
 
     // 로그인/회원가입 모달 열기/닫기
     function toggleAuth() {
