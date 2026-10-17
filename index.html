@@ -23,12 +23,6 @@
   /* JS가 토글하는 상태 클래스 (Tailwind 유틸리티만으로 표현하기 어려운 부분) */
   .cart-modal-overlay { display: none; }
   .cart-modal-overlay.open { display: flex; }
-  .auth-view { display: none; }
-  .auth-view.active { display: block; }
-  .auth-tab.active { color: #000000; font-weight: 800; border-bottom-color: #16A34A; }
-  .auth-message { font-size: 12px; min-height: 16px; margin-top: 4px; }
-  .auth-message.success { color: #16A34A; font-weight: 700; }
-  .auth-message.error { color: #E5342F; font-weight: 700; }
   .toast { opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translate(-50%, 10px); }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
   .wish-btn.active { color: #E5342F; }
@@ -65,10 +59,11 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
-        <button id="auth-widget" onclick="toggleAuth()" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
+        <button id="auth-widget" onclick="location.href='login.html'" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
           <i class="fa-regular fa-user text-lg"></i>
-          <span id="auth-widget-text" class="hidden sm:inline text-xs font-bold">마이페이지</span>
+          <span id="auth-widget-text" class="hidden sm:inline text-xs font-bold">로그인</span>
         </button>
+        <button id="logout-btn" onclick="handleSignOut()" class="hidden text-xs font-bold text-gray-400 hover:text-sale">로그아웃</button>
         <button onclick="toggleCart()" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
           <i class="fa-solid fa-cart-shopping text-lg"></i>
           <span id="cart-count" class="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-sale text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
@@ -88,38 +83,6 @@
     </nav>
   </header>
 
-  <!-- 로그인/회원가입 모달 -->
-  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/60 p-5" id="auth-modal-overlay" onclick="closeAuthOnOverlay(event)">
-    <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
-      <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
-        <h2 class="text-lg font-black">로그인 / 회원가입</h2>
-        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleAuth()">✕</button>
-      </div>
-      <div class="auth-tabs flex mb-5 border-b border-gray-200">
-        <button class="auth-tab active flex-1 py-2.5 text-sm text-gray-400 border-b-2 border-transparent" id="auth-tab-login" onclick="showAuthView('login')">로그인</button>
-        <button class="auth-tab flex-1 py-2.5 text-sm text-gray-400 border-b-2 border-transparent" id="auth-tab-signup" onclick="showAuthView('signup')">회원가입</button>
-      </div>
-
-      <!-- 로그인 화면 -->
-      <div class="auth-view active" id="auth-view-login">
-        <input type="email" id="login-email" placeholder="이메일" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
-        <input type="password" id="login-password" placeholder="비밀번호" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
-        <button class="w-full bg-brand text-white font-black text-sm py-3 rounded-lg mb-2 hover:bg-green-700 transition" onclick="handleSignIn()">로그인</button>
-        <div id="login-message" class="auth-message"></div>
-      </div>
-
-      <!-- 회원가입 화면 -->
-      <div class="auth-view" id="auth-view-signup">
-        <input type="text" id="auth-name" placeholder="이름" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
-        <input type="email" id="auth-email" placeholder="이메일" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
-        <input type="password" id="auth-password" placeholder="비밀번호" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
-        <input type="password" id="auth-password-confirm" placeholder="비밀번호 확인" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
-        <button class="w-full border-2 border-brand text-brand font-black text-sm py-3 rounded-lg mb-2 hover:bg-brand hover:text-white transition" onclick="handleSignUp()">회원가입</button>
-        <div id="signup-message" class="auth-message"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- 장바구니 모달 -->
   <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/60 p-5" id="cart-modal-overlay" onclick="closeCartOnOverlay(event)">
     <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
@@ -131,6 +94,17 @@
         <div class="cart-empty text-center text-gray-400 text-sm py-10">담긴 상품이 없습니다</div>
       </div>
       <button class="order-btn w-full mt-4 py-3.5 rounded-lg bg-brand text-white font-black text-sm disabled:bg-gray-200 disabled:text-gray-400 hover:bg-green-700 disabled:hover:bg-gray-200 transition" id="order-btn" onclick="placeOrder()" disabled>주문하기</button>
+    </div>
+  </div>
+
+  <!-- 마이페이지 모달 -->
+  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/60 p-5" id="mypage-modal-overlay" onclick="closeMypageOnOverlay(event)">
+    <div class="bg-white w-[420px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
+      <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
+        <h2 class="text-lg font-black"><i class="fa-regular fa-user text-brand"></i> 마이페이지</h2>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleMypage()">✕</button>
+      </div>
+      <div id="mypage-content"></div>
     </div>
   </div>
 
@@ -489,101 +463,12 @@
 
   <!-- Supabase 클라이언트 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
 
   <script>
     // 버튼 클릭 시 알림창 띄우기
     function showAlert(message) {
       alert(message);
-    }
-
-    // Supabase 클라이언트 초기화 (publishable 키는 공개용이라 그대로 사용 가능)
-    var supabaseClient = supabase.createClient(
-      'https://zcxzelfnshxzbenorblj.supabase.co',
-      'sb_publishable_Dai0tnACM-C1F-vjMlMYKg_KmsZKeNi'
-    );
-
-    // 로그인/회원가입 모달 열기/닫기
-    function toggleAuth() {
-      document.getElementById('auth-modal-overlay').classList.toggle('open');
-    }
-
-    // 모달 바깥(어두운 배경) 클릭 시 닫기
-    function closeAuthOnOverlay(event) {
-      if (event.target.id === 'auth-modal-overlay') {
-        toggleAuth();
-      }
-    }
-
-    // 로그인/회원가입 탭 전환
-    function showAuthView(view) {
-      var isLogin = view === 'login';
-      document.getElementById('auth-view-login').classList.toggle('active', isLogin);
-      document.getElementById('auth-view-signup').classList.toggle('active', !isLogin);
-      document.getElementById('auth-tab-login').classList.toggle('active', isLogin);
-      document.getElementById('auth-tab-signup').classList.toggle('active', !isLogin);
-    }
-
-    // Supabase 인증 에러 메시지를 한국어로 변환
-    function translateAuthError(message) {
-      var map = {
-        'Invalid login credentials': '이메일 또는 비밀번호가 올바르지 않습니다.',
-        'User already registered': '이미 가입된 이메일입니다.',
-        'Password should be at least 6 characters': '비밀번호는 6자 이상이어야 합니다.',
-        'Unable to validate email address: invalid format': '이메일 형식이 올바르지 않습니다.',
-        'Email not confirmed': '이메일 인증이 필요합니다. 메일함을 확인해주세요.'
-      };
-      return map[message] || ('오류가 발생했습니다: ' + message);
-    }
-
-    // 인증 화면의 안내 문구 표시
-    function showAuthMessage(elementId, text, isError) {
-      var msgEl = document.getElementById(elementId);
-      msgEl.textContent = text;
-      msgEl.className = 'auth-message' + (isError ? ' error' : ' success');
-    }
-
-    // 회원가입 버튼 클릭
-    function handleSignUp() {
-      var name = document.getElementById('auth-name').value.trim();
-      var email = document.getElementById('auth-email').value.trim();
-      var password = document.getElementById('auth-password').value;
-      var passwordConfirm = document.getElementById('auth-password-confirm').value;
-
-      if (!name) {
-        showAuthMessage('signup-message', '이름을 입력해주세요.', true);
-        return;
-      }
-      if (password !== passwordConfirm) {
-        showAuthMessage('signup-message', '비밀번호가 일치하지 않습니다.', true);
-        return;
-      }
-
-      supabaseClient.auth.signUp({
-        email: email,
-        password: password,
-        options: { data: { name: name } }
-      }).then(function (result) {
-        if (result.error) {
-          showAuthMessage('signup-message', translateAuthError(result.error.message), true);
-        } else {
-          showAuthMessage('signup-message', '가입이 완료되었습니다', false);
-        }
-      });
-    }
-
-    // 로그인 버튼 클릭
-    function handleSignIn() {
-      var email = document.getElementById('login-email').value.trim();
-      var password = document.getElementById('login-password').value;
-
-      supabaseClient.auth.signInWithPassword({ email: email, password: password }).then(function (result) {
-        if (result.error) {
-          showAuthMessage('login-message', translateAuthError(result.error.message), true);
-        } else {
-          showAuthMessage('login-message', '로그인 되었습니다', false);
-          setTimeout(toggleAuth, 800);
-        }
-      });
     }
 
     // 짧게 보였다 사라지는 알림 표시
@@ -611,12 +496,15 @@
     function updateAuthWidget(user) {
       var textEl = document.getElementById('auth-widget-text');
       var widget = document.getElementById('auth-widget');
+      var logoutBtn = document.getElementById('logout-btn');
       if (user) {
-        textEl.textContent = user.email.split('@')[0] + '님';
-        widget.onclick = handleSignOut;
-      } else {
         textEl.textContent = '마이페이지';
-        widget.onclick = toggleAuth;
+        widget.onclick = toggleMypage;
+        logoutBtn.classList.remove('hidden');
+      } else {
+        textEl.textContent = '로그인';
+        widget.onclick = function () { location.href = 'login.html'; };
+        logoutBtn.classList.add('hidden');
       }
     }
 
@@ -627,14 +515,109 @@
 
       if (user) {
         loadCartFromServer();
+        loadOrdersFromServer();
       } else {
         cart = [];
+        orders = [];
         renderCart();
       }
     });
 
     // 장바구니에 담긴 상품 목록 (로그인 시 Supabase의 cart_items 테이블과 동기화됨)
     var cart = [];
+
+    // 로그인한 사용자의 주문 내역 (로그인 시 Supabase의 orders 테이블에서 불러옴)
+    var orders = [];
+
+    // 마이페이지 모달 열기/닫기
+    function toggleMypage() {
+      var overlay = document.getElementById('mypage-modal-overlay');
+      overlay.classList.toggle('open');
+      if (overlay.classList.contains('open')) {
+        renderMypage();
+      }
+    }
+
+    // 모달 바깥(어두운 배경) 클릭 시 닫기
+    function closeMypageOnOverlay(event) {
+      if (event.target.id === 'mypage-modal-overlay') {
+        toggleMypage();
+      }
+    }
+
+    // 로그인한 사용자의 주문 내역을 Supabase에서 불러오기
+    function loadOrdersFromServer() {
+      supabaseClient
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .then(function (result) {
+          if (result.error || !result.data) {
+            return;
+          }
+          orders = result.data;
+          renderMypage();
+        });
+    }
+
+    // 마이페이지 내용(구매건수, 장바구니, 주문내역) 그리기
+    function renderMypage() {
+      var contentEl = document.getElementById('mypage-content');
+      if (!contentEl) {
+        return;
+      }
+
+      var cartQty = cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
+
+      var summaryHtml =
+        '<div class="grid grid-cols-2 gap-3 mb-6">' +
+          '<div class="bg-gray-50 rounded-lg p-4 text-center">' +
+            '<p class="text-2xl font-black text-brand">' + orders.length + '</p>' +
+            '<p class="text-xs text-gray-500 font-bold mt-1">구매건수</p>' +
+          '</div>' +
+          '<div class="bg-gray-50 rounded-lg p-4 text-center">' +
+            '<p class="text-2xl font-black text-brand">' + cartQty + '</p>' +
+            '<p class="text-xs text-gray-500 font-bold mt-1">장바구니 상품수</p>' +
+          '</div>' +
+        '</div>';
+
+      var cartHtml = '<h3 class="text-sm font-black mb-2">장바구니에 담긴 상품</h3>';
+      if (cart.length === 0) {
+        cartHtml += '<div class="text-center text-gray-400 text-xs py-4">담긴 상품이 없습니다</div>';
+      } else {
+        cartHtml += '<div class="mb-6">' + cart.map(function (item) {
+          return (
+            '<div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-100">' +
+              '<span>' + item.name + ' x' + item.qty + '</span>' +
+              '<span class="font-bold">' + (item.priceValue * item.qty).toLocaleString() + '원</span>' +
+            '</div>'
+          );
+        }).join('') + '</div>';
+      }
+
+      var ordersHtml = '<h3 class="text-sm font-black mb-2">주문 내역</h3>';
+      if (orders.length === 0) {
+        ordersHtml += '<div class="text-center text-gray-400 text-xs py-8">주문 내역이 없습니다</div>';
+      } else {
+        ordersHtml += orders.map(function (order) {
+          var date = new Date(order.created_at).toLocaleDateString('ko-KR');
+          var itemsSummary = order.items.map(function (item) {
+            return item.name + ' x' + item.qty;
+          }).join(', ');
+          return (
+            '<div class="border border-gray-200 rounded-lg p-3 mb-2">' +
+              '<div class="flex items-center justify-between text-[11px] text-gray-400 mb-1">' +
+                '<span>' + date + '</span>' +
+                '<span class="font-black text-gray-900">' + order.total_amount.toLocaleString() + '원</span>' +
+              '</div>' +
+              '<p class="text-xs text-gray-700">' + itemsSummary + '</p>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      contentEl.innerHTML = summaryHtml + cartHtml + ordersHtml;
+    }
 
     // 로그인한 사용자의 장바구니를 Supabase에서 불러오기
     function loadCartFromServer() {
@@ -792,6 +775,17 @@
       var grandTotal = cart.reduce(function (sum, item) { return sum + item.priceValue * item.qty; }, 0);
 
       showToast('총 ' + totalQty + '개 상품, ' + grandTotal.toLocaleString() + '원 주문이 완료되었습니다!');
+
+      if (currentUser) {
+        supabaseClient.from('orders').insert({
+          user_id: currentUser.id,
+          items: cart.map(function (item) { return { name: item.name, qty: item.qty, priceValue: item.priceValue }; }),
+          total_qty: totalQty,
+          total_amount: grandTotal
+        }).then(function () {
+          loadOrdersFromServer();
+        });
+      }
 
       cart.forEach(function (item) {
         deleteCartItemFromServer(item.productId);

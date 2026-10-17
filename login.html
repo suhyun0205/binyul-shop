@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그인 - 빈이율이샵</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: { brand: '#16A34A', sale: '#E5342F' },
+        fontFamily: { sans: ['Pretendard', 'Malgun Gothic', 'sans-serif'] }
+      }
+    }
+  };
+</script>
+<style>
+  body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; }
+  .auth-message { font-size: 12px; min-height: 16px; margin-top: 10px; text-align: center; }
+  .auth-message.success { color: #16A34A; font-weight: 700; }
+  .auth-message.error { color: #E5342F; font-weight: 700; }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-[480px] mx-auto px-4 py-4 flex items-center gap-2">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-2xl">🏠</span>
+        <h1 class="text-lg font-black tracking-tight">빈이율이<span class="text-brand">샵</span></h1>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-1 flex items-start sm:items-center justify-center px-4 py-10">
+    <div class="w-full max-w-[380px] bg-white rounded-xl shadow-sm border border-gray-100 p-7">
+      <h2 class="text-xl font-black text-center mb-1">로그인</h2>
+      <p class="text-xs text-gray-400 text-center mb-6">빈이율이샵 회원이라면 로그인해주세요</p>
+
+      <input type="email" id="login-email" placeholder="이메일" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+      <input type="password" id="login-password" placeholder="비밀번호" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand" onkeydown="if(event.key==='Enter'){handleSignIn();}">
+      <button class="w-full bg-brand text-white font-black text-sm py-3 rounded-lg mb-1 hover:bg-green-700 transition" onclick="handleSignIn()">로그인</button>
+      <div id="login-message" class="auth-message"></div>
+
+      <div class="text-center text-xs text-gray-500 mt-6 pt-5 border-t border-gray-100">
+        아직 회원이 아니신가요? <a href="signup.html" class="text-brand font-bold hover:underline">회원가입</a>
+      </div>
+      <div class="text-center text-xs text-gray-400 mt-3">
+        <a href="index.html" class="hover:underline"><i class="fa-solid fa-arrow-left"></i> 쇼핑몰로 돌아가기</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Supabase 클라이언트 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    // 인증 화면의 안내 문구 표시
+    function showAuthMessage(elementId, text, isError) {
+      var msgEl = document.getElementById(elementId);
+      msgEl.textContent = text;
+      msgEl.className = 'auth-message' + (isError ? ' error' : ' success');
+    }
+
+    // 로그인 버튼 클릭
+    function handleSignIn() {
+      var email = document.getElementById('login-email').value.trim();
+      var password = document.getElementById('login-password').value;
+
+      supabaseClient.auth.signInWithPassword({ email: email, password: password }).then(function (result) {
+        if (result.error) {
+          showAuthMessage('login-message', translateAuthError(result.error.message), true);
+        } else {
+          showAuthMessage('login-message', '로그인 되었습니다. 이동 중...', false);
+          setTimeout(function () {
+            location.href = 'index.html';
+          }, 800);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
