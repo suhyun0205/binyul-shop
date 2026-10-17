@@ -61,7 +61,7 @@
       <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
         <button id="auth-widget" onclick="location.href='login.html'" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
           <i class="fa-regular fa-user text-lg"></i>
-          <span id="auth-widget-text" class="hidden sm:inline text-xs font-bold">로그인</span>
+          <span id="auth-widget-text" class="inline-block align-middle text-xs font-bold max-w-[90px] sm:max-w-[160px] truncate">로그인</span>
         </button>
         <button id="logout-btn" onclick="handleSignOut()" class="hidden text-xs font-bold text-gray-400 hover:text-sale">로그아웃</button>
         <button onclick="toggleCart()" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
@@ -317,9 +317,17 @@
       }, 1800);
     }
 
+    // 장바구니 서버 동기화 중 아직 끝나지 않은 요청들 (로그아웃 전 완료를 기다리기 위함)
+    var pendingCartSyncs = [];
+
     // 로그아웃 (로그인 상태에서 상단 버튼 클릭 시)
     function handleSignOut() {
-      supabaseClient.auth.signOut().then(function () {
+      // 방금 담은 상품이 서버에 저장되기 전에 로그아웃되어 유실되지 않도록,
+      // 진행 중인 장바구니 동기화 요청을 모두 기다린 뒤 로그아웃합니다.
+      Promise.all(pendingCartSyncs).then(function () {
+        return supabaseClient.auth.signOut();
+      }).then(function () {
+        pendingCartSyncs = [];
         showToast('로그아웃되었습니다.');
       });
     }
@@ -327,13 +335,16 @@
     // 현재 로그인한 사용자 (비로그인 상태면 null)
     var currentUser = null;
 
+    // 마지막으로 장바구니/주문내역을 불러온 사용자 id (중복 재호출 방지용)
+    var cartLoadedForUserId = null;
+
     // 로그인 상태에 따라 상단 버튼 표시 갱신
     function updateAuthWidget(user) {
       var textEl = document.getElementById('auth-widget-text');
       var widget = document.getElementById('auth-widget');
       var logoutBtn = document.getElementById('logout-btn');
       if (user) {
-        textEl.textContent = '마이페이지';
+        textEl.textContent = user.email + '님';
         widget.onclick = toggleMypage;
         logoutBtn.classList.remove('hidden');
       } else {
@@ -349,9 +360,16 @@
       updateAuthWidget(user);
 
       if (user) {
-        loadCartFromServer();
-        loadOrdersFromServer();
+        // 토큰 자동 갱신 등으로 같은 사용자에 대해 이벤트가 다시 발생해도
+        // 장바구니를 또 불러오지 않도록 해서, 방금 담은 상품이 아직 서버에
+        // 반영되기 전에 예전 데이터로 덮어써지는 것을 방지합니다.
+        if (cartLoadedForUserId !== user.id) {
+          cartLoadedForUserId = user.id;
+          loadCartFromServer();
+          loadOrdersFromServer();
+        }
       } else {
+        cartLoadedForUserId = null;
         cart = [];
         orders = [];
         renderCart();
@@ -463,7 +481,9 @@
           if (result.error || !result.data) {
             return;
           }
-          cart = result.data.map(function (row) {
+          cart = result.data.filter(function (row) {
+            return row.products;
+          }).map(function (row) {
             return {
               productId: row.product_id,
               name: row.products.name,
@@ -480,10 +500,11 @@
       if (!currentUser) {
         return;
       }
-      supabaseClient.from('cart_items').upsert(
+      var p = supabaseClient.from('cart_items').upsert(
         { user_id: currentUser.id, product_id: productId, quantity: quantity },
         { onConflict: 'user_id,product_id' }
       );
+      pendingCartSyncs.push(p);
     }
 
     // 서버에서 장바구니 줄 삭제
@@ -491,9 +512,10 @@
       if (!currentUser) {
         return;
       }
-      supabaseClient.from('cart_items').delete()
+      var p = supabaseClient.from('cart_items').delete()
         .eq('user_id', currentUser.id)
         .eq('product_id', productId);
+      pendingCartSyncs.push(p);
     }
 
     // 상단 장바구니 버튼 클릭 시 모달 열기/닫기
