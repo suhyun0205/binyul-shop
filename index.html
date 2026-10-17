@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>빈이율이샵</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
     theme: {
       extend: {
-        colors: { brand: '#FF0000' },
+        colors: { brand: '#16A34A', sale: '#E5342F' },
         fontFamily: { sans: ['Pretendard', 'Malgun Gothic', 'sans-serif'] }
       }
     }
@@ -24,52 +25,75 @@
   .cart-modal-overlay.open { display: flex; }
   .auth-view { display: none; }
   .auth-view.active { display: block; }
-  .auth-tab.active { color: #000000; font-weight: 800; border-bottom-color: #FF0000; }
+  .auth-tab.active { color: #000000; font-weight: 800; border-bottom-color: #16A34A; }
   .auth-message { font-size: 12px; min-height: 16px; margin-top: 4px; }
   .auth-message.success { color: #16A34A; font-weight: 700; }
-  .auth-message.error { color: #FF0000; font-weight: 700; }
-  .toast { opacity: 0; pointer-events: none; transition: opacity .3s; }
-  .toast.show { opacity: 1; }
-  .wish-btn.active { color: #FF0000; }
-  .nav-link.active { color: #FF0000; border-bottom-color: #FF0000; }
-  .sort-btn.active { background: #000000; color: #ffffff; border-color: #000000; }
+  .auth-message.error { color: #E5342F; font-weight: 700; }
+  .toast { opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translate(-50%, 10px); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .wish-btn.active { color: #E5342F; }
+  .cat-tab.active { color: #16A34A; border-bottom-color: #16A34A; }
+  .sort-btn.active { background: #111111; color: #ffffff; border-color: #111111; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .banner-track { transition: transform .5s ease; }
 </style>
 </head>
-<body class="bg-white text-black">
+<body class="bg-white text-gray-900">
 
   <!-- 짧게 보였다 사라지는 알림 -->
-  <div class="toast fixed bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-sm font-bold px-5 py-3 rounded-full z-[2000] shadow-xl" id="toast"></div>
+  <div class="toast fixed bottom-8 left-1/2 bg-gray-900 text-white text-sm font-bold px-5 py-3 rounded-full z-[2000] shadow-xl" id="toast"></div>
+
+  <!-- 최상단 안내 바 -->
+  <div class="bg-gray-900 text-white text-center text-[11px] sm:text-xs font-medium py-2 px-4">
+    🎉 첫 구매 시 3,000원 할인 쿠폰 증정 &nbsp;·&nbsp; 전 상품 무료배송 혜택
+  </div>
 
   <!-- 상단 헤더 -->
-  <header class="sticky top-0 z-50 bg-white border-b-2 border-black">
-    <div class="max-w-[1280px] mx-auto px-4 py-3 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5">
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-[1280px] mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2 shrink-0">
         <span class="text-2xl">🏠</span>
-        <div class="leading-none">
-          <h1 class="text-xl sm:text-2xl font-black tracking-tight">빈이율이<span class="text-brand">SHOP</span></h1>
-          <p class="text-[11px] text-gray-500 font-medium mt-1">주방 · 욕실 · 생활용품 셀렉트샵</p>
-        </div>
+        <h1 class="text-lg sm:text-xl font-black tracking-tight">빈이율이<span class="text-brand">샵</span></h1>
       </div>
-      <div class="flex items-center gap-2">
-        <span class="hidden md:inline text-[11px] text-gray-400 font-medium mr-1">스토어찜 1,204 · 톡톡친구 8,320</span>
-        <button id="auth-widget" onclick="toggleAuth()" class="px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-bold border-2 border-black rounded-full hover:bg-black hover:text-white transition whitespace-nowrap">로그인/회원가입</button>
-        <button onclick="toggleCart()" class="px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-bold bg-black text-white rounded-full flex items-center gap-1.5 hover:bg-brand transition whitespace-nowrap">
-          🛒 장바구니
-          <span id="cart-count" class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-brand rounded-full text-[11px] font-black">0</span>
+
+      <div class="flex-1 flex items-center bg-gray-100 rounded-full px-4 py-2 mx-1 sm:mx-4">
+        <input id="search-input" type="text" placeholder="상품을 검색해보세요" class="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
+        <button onclick="searchProducts()" aria-label="검색" class="text-gray-500 hover:text-brand">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <button id="auth-widget" onclick="toggleAuth()" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
+          <i class="fa-regular fa-user text-lg"></i>
+          <span id="auth-widget-text" class="hidden sm:inline text-xs font-bold">마이페이지</span>
+        </button>
+        <button onclick="toggleCart()" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
+          <i class="fa-solid fa-cart-shopping text-lg"></i>
+          <span id="cart-count" class="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-sale text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
         </button>
       </div>
     </div>
+
+    <!-- 카테고리 탭 (스크롤 시 상단 고정) -->
+    <nav class="sticky top-0 z-40 bg-white border-t border-b border-gray-200">
+      <div class="max-w-[1280px] mx-auto px-4 flex gap-6 overflow-x-auto no-scrollbar">
+        <a href="#" id="tab-all" class="cat-tab active text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap text-gray-700" onclick="filterByTab('all', this); return false;">ALL</a>
+        <a href="#" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap text-gray-700" onclick="filterByTab('best', this); return false;">BEST</a>
+        <a href="#" id="tab-new" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap text-gray-700" onclick="filterByTab('new', this); return false;">NEW</a>
+        <a href="#" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap text-gray-700" onclick="showToast('준비 중인 기획전입니다.'); return false;">기획전</a>
+        <a href="#" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap text-gray-700" onclick="showToast('준비 중인 이벤트입니다.'); return false;">이벤트</a>
+      </div>
+    </nav>
   </header>
 
   <!-- 로그인/회원가입 모달 -->
-  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/70 p-5" id="auth-modal-overlay" onclick="closeAuthOnOverlay(event)">
-    <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 shadow-2xl">
-      <div class="flex items-center justify-between mb-5 pb-3 border-b-2 border-black">
+  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/60 p-5" id="auth-modal-overlay" onclick="closeAuthOnOverlay(event)">
+    <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
+      <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
         <h2 class="text-lg font-black">로그인 / 회원가입</h2>
-        <button class="cart-modal-close text-xl font-bold leading-none" onclick="toggleAuth()">✕</button>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleAuth()">✕</button>
       </div>
       <div class="auth-tabs flex mb-5 border-b border-gray-200">
         <button class="auth-tab active flex-1 py-2.5 text-sm text-gray-400 border-b-2 border-transparent" id="auth-tab-login" onclick="showAuthView('login')">로그인</button>
@@ -78,128 +102,83 @@
 
       <!-- 로그인 화면 -->
       <div class="auth-view active" id="auth-view-login">
-        <input type="email" id="login-email" placeholder="이메일" class="w-full border border-gray-300 px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-black">
-        <input type="password" id="login-password" placeholder="비밀번호" class="w-full border border-gray-300 px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-black">
-        <button class="w-full bg-black text-white font-black text-sm py-3 mb-2 hover:bg-brand transition" onclick="handleSignIn()">로그인</button>
+        <input type="email" id="login-email" placeholder="이메일" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <input type="password" id="login-password" placeholder="비밀번호" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <button class="w-full bg-brand text-white font-black text-sm py-3 rounded-lg mb-2 hover:bg-green-700 transition" onclick="handleSignIn()">로그인</button>
         <div id="login-message" class="auth-message"></div>
       </div>
 
       <!-- 회원가입 화면 -->
       <div class="auth-view" id="auth-view-signup">
-        <input type="text" id="auth-name" placeholder="이름" class="w-full border border-gray-300 px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-black">
-        <input type="email" id="auth-email" placeholder="이메일" class="w-full border border-gray-300 px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-black">
-        <input type="password" id="auth-password" placeholder="비밀번호" class="w-full border border-gray-300 px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-black">
-        <input type="password" id="auth-password-confirm" placeholder="비밀번호 확인" class="w-full border border-gray-300 px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-black">
-        <button class="w-full border-2 border-black text-black font-black text-sm py-3 mb-2 hover:bg-black hover:text-white transition" onclick="handleSignUp()">회원가입</button>
+        <input type="text" id="auth-name" placeholder="이름" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <input type="email" id="auth-email" placeholder="이메일" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <input type="password" id="auth-password" placeholder="비밀번호" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <input type="password" id="auth-password-confirm" placeholder="비밀번호 확인" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <button class="w-full border-2 border-brand text-brand font-black text-sm py-3 rounded-lg mb-2 hover:bg-brand hover:text-white transition" onclick="handleSignUp()">회원가입</button>
         <div id="signup-message" class="auth-message"></div>
       </div>
     </div>
   </div>
 
   <!-- 장바구니 모달 -->
-  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/70 p-5" id="cart-modal-overlay" onclick="closeCartOnOverlay(event)">
-    <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 shadow-2xl">
-      <div class="flex items-center justify-between mb-5 pb-3 border-b-2 border-black">
-        <h2 class="text-lg font-black">🛒 장바구니</h2>
-        <button class="cart-modal-close text-xl font-bold leading-none" onclick="toggleCart()">✕</button>
+  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/60 p-5" id="cart-modal-overlay" onclick="closeCartOnOverlay(event)">
+    <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
+      <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
+        <h2 class="text-lg font-black"><i class="fa-solid fa-cart-shopping text-brand"></i> 장바구니</h2>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleCart()">✕</button>
       </div>
       <div id="cart-list">
         <div class="cart-empty text-center text-gray-400 text-sm py-10">담긴 상품이 없습니다</div>
       </div>
-      <button class="order-btn w-full mt-4 py-3.5 bg-black text-white font-black text-sm disabled:bg-gray-200 disabled:text-gray-400 hover:bg-brand disabled:hover:bg-gray-200 transition" id="order-btn" onclick="placeOrder()" disabled>주문하기</button>
+      <button class="order-btn w-full mt-4 py-3.5 rounded-lg bg-brand text-white font-black text-sm disabled:bg-gray-200 disabled:text-gray-400 hover:bg-green-700 disabled:hover:bg-gray-200 transition" id="order-btn" onclick="placeOrder()" disabled>주문하기</button>
     </div>
   </div>
 
-  <!-- 카테고리 탭 -->
-  <nav class="bg-black">
-    <div class="max-w-[1280px] mx-auto px-4 flex gap-6 overflow-x-auto no-scrollbar">
-      <a href="#" id="filter-all" class="nav-link active text-white/60 text-sm font-bold py-3.5 border-b-2 border-transparent whitespace-nowrap" onclick="filterProducts('all', this); return false;">ALL</a>
-      <a href="#" class="nav-link text-white/60 text-sm font-bold py-3.5 border-b-2 border-transparent whitespace-nowrap" onclick="filterProducts('kitchen', this); return false;">주방</a>
-      <a href="#" class="nav-link text-white/60 text-sm font-bold py-3.5 border-b-2 border-transparent whitespace-nowrap" onclick="filterProducts('bath', this); return false;">욕실</a>
-      <a href="#" class="nav-link text-white/60 text-sm font-bold py-3.5 border-b-2 border-transparent whitespace-nowrap" onclick="filterProducts('life', this); return false;">생활</a>
-      <a href="#" class="nav-link text-white/60 text-sm font-bold py-3.5 border-b-2 border-transparent whitespace-nowrap">이벤트</a>
-    </div>
-  </nav>
-
-  <!-- 메인 이벤트 배너 (스와이프) -->
-  <section class="relative bg-black overflow-hidden">
+  <!-- 메인 롤링 배너 -->
+  <section class="relative bg-gray-900 overflow-hidden">
     <div id="banner-track" class="banner-track flex">
-      <div class="w-full flex-shrink-0 bg-gradient-to-br from-black via-neutral-900 to-neutral-800 text-white flex flex-col items-center justify-center text-center py-16 sm:py-24 px-6">
-        <p class="text-xs font-black tracking-[0.2em] text-brand mb-3">BINYULI PICK</p>
-        <h2 class="text-2xl sm:text-5xl font-black leading-tight mb-5">따뜻한 집안일의 시작,<br>첫 구매 15% 할인</h2>
-        <button onclick="showAlert('쿠폰이 발급되었습니다!')" class="bg-white text-black font-black px-7 py-3 rounded-full text-sm hover:bg-brand hover:text-white transition">지금 쇼핑하기</button>
+      <div class="w-full flex-shrink-0 bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white flex flex-col items-center justify-center text-center py-8 sm:py-10 px-6">
+        <p class="text-xs font-black tracking-[0.2em] text-emerald-300 mb-2">BINYULI SHOP</p>
+        <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">첫 구매 회원이라면<br>즉시 3,000원 할인 쿠폰</h2>
+        <button onclick="showToast('쿠폰이 발급되었습니다!')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-brand hover:text-white transition">쿠폰 받기</button>
       </div>
-      <div class="w-full flex-shrink-0 bg-gradient-to-br from-neutral-900 via-black to-neutral-800 text-white flex flex-col items-center justify-center text-center py-16 sm:py-24 px-6">
-        <p class="text-xs font-black tracking-[0.2em] text-brand mb-3">NEW ARRIVAL</p>
-        <h2 class="text-2xl sm:text-5xl font-black leading-tight mb-5">신상품 입고 완료<br>지금 바로 확인하세요</h2>
-        <button onclick="filterProducts('all', document.getElementById('filter-all'))" class="bg-white text-black font-black px-7 py-3 rounded-full text-sm hover:bg-brand hover:text-white transition">신상품 보기</button>
+      <div class="w-full flex-shrink-0 bg-gradient-to-br from-sky-800 via-sky-900 to-gray-900 text-white flex flex-col items-center justify-center text-center py-8 sm:py-10 px-6">
+        <p class="text-xs font-black tracking-[0.2em] text-sky-300 mb-2">NEW ARRIVAL</p>
+        <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">신상품 입고 완료<br>지금 바로 확인하세요</h2>
+        <button onclick="filterByTab('new', document.getElementById('tab-new'))" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-brand hover:text-white transition">신상품 보기</button>
       </div>
-      <div class="w-full flex-shrink-0 bg-gradient-to-br from-brand via-red-700 to-black text-white flex flex-col items-center justify-center text-center py-16 sm:py-24 px-6">
-        <p class="text-xs font-black tracking-[0.2em] text-white/80 mb-3">FREE SHIPPING</p>
-        <h2 class="text-2xl sm:text-5xl font-black leading-tight mb-5">전 상품 무료 교환·반품<br>걱정 없이 쇼핑하세요</h2>
-        <button onclick="showAlert('쿠폰이 발급되었습니다!')" class="bg-black text-white font-black px-7 py-3 rounded-full text-sm hover:bg-white hover:text-black transition">이벤트 보기</button>
+      <div class="w-full flex-shrink-0 bg-gradient-to-br from-sale via-red-700 to-gray-900 text-white flex flex-col items-center justify-center text-center py-8 sm:py-10 px-6">
+        <p class="text-xs font-black tracking-[0.2em] text-red-200 mb-2">TIME SALE</p>
+        <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">오늘 하루만! 전상품<br>타임세일 최대 15%</h2>
+        <button onclick="showToast('쿠폰이 발급되었습니다!')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-sale hover:text-white transition">타임세일 보기</button>
       </div>
     </div>
-    <button onclick="prevSlide()" aria-label="이전 배너" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center text-lg">‹</button>
-    <button onclick="nextSlide()" aria-label="다음 배너" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center text-lg">›</button>
+    <button onclick="prevSlide()" aria-label="이전 배너" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button onclick="nextSlide()" aria-label="다음 배너" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
     <div id="banner-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"></div>
   </section>
 
-  <!-- 안내 바 -->
-  <div class="bg-gray-100 text-center text-xs text-gray-600 font-medium py-2.5">🔄 해당 스토어는 무료 교환·반품 서비스를 제공합니다</div>
-
-  <!-- 실시간 인기 랭킹 TOP 5 -->
-  <section class="bg-black py-10">
-    <div class="max-w-[1280px] mx-auto px-4">
-      <h2 class="text-white text-xl sm:text-2xl font-black mb-5">🔥 실시간 인기 랭킹 <span class="text-brand">TOP 5</span></h2>
-      <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-        <div class="flex-shrink-0 w-36 sm:w-44">
-          <div class="relative">
-            <span class="absolute -left-1 -top-2 text-5xl font-black italic text-brand" style="-webkit-text-stroke:1px #fff;">1</span>
-            <img src="images/oven-mitts.jpg" class="w-full aspect-square object-cover" alt="귀여운 도트 오븐장갑">
-          </div>
-          <p class="text-white text-xs font-bold mt-2 line-clamp-1">귀여운 도트 오븐장갑</p>
-          <p class="text-white text-sm font-black">12,800원</p>
-        </div>
-        <div class="flex-shrink-0 w-36 sm:w-44">
-          <div class="relative">
-            <span class="absolute -left-1 -top-2 text-5xl font-black italic text-white/90" style="-webkit-text-stroke:1px #FF0000;">2</span>
-            <img src="images/storage-basket.jpg" class="w-full aspect-square object-cover" alt="다용도 정리 바구니">
-          </div>
-          <p class="text-white text-xs font-bold mt-2 line-clamp-1">다용도 정리 바구니</p>
-          <p class="text-white text-sm font-black">12,800원</p>
-        </div>
-        <div class="flex-shrink-0 w-36 sm:w-44">
-          <div class="relative">
-            <span class="absolute -left-1 -top-2 text-5xl font-black italic text-white/90" style="-webkit-text-stroke:1px #FF0000;">3</span>
-            <img src="images/shower-ball.jpg" class="w-full aspect-square object-cover" alt="거품 샤워볼">
-          </div>
-          <p class="text-white text-xs font-bold mt-2 line-clamp-1">거품 샤워볼</p>
-          <p class="text-white text-sm font-black">5,100원</p>
-        </div>
-        <div class="flex-shrink-0 w-36 sm:w-44">
-          <div class="relative">
-            <span class="absolute -left-1 -top-2 text-5xl font-black italic text-white/90" style="-webkit-text-stroke:1px #FF0000;">4</span>
-            <img src="images/egg-pan.jpg" class="w-full aspect-square object-cover" alt="4구 에그팬 팬케이크팬">
-          </div>
-          <p class="text-white text-xs font-bold mt-2 line-clamp-1">4구 에그팬 팬케이크팬</p>
-          <p class="text-white text-sm font-black">25,400원</p>
-        </div>
-        <div class="flex-shrink-0 w-36 sm:w-44">
-          <div class="relative">
-            <span class="absolute -left-1 -top-2 text-5xl font-black italic text-white/90" style="-webkit-text-stroke:1px #FF0000;">5</span>
-            <img src="images/beach-towel.jpg" class="w-full aspect-square object-cover" alt="극세사 스트라이프 타올가운">
-          </div>
-          <p class="text-white text-xs font-bold mt-2 line-clamp-1">극세사 스트라이프 타올가운</p>
-          <p class="text-white text-sm font-black">18,700원</p>
-        </div>
-      </div>
+  <!-- 프로모션 포인트 뱃지 -->
+  <div class="bg-white border-b border-gray-100">
+    <div class="max-w-[1280px] mx-auto px-4 py-4 flex items-center justify-center gap-4 sm:gap-8 flex-wrap text-[11px] sm:text-xs font-bold text-gray-600">
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> 오늘출발</span>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck-fast text-brand"></i> 무료배송</span>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-sale"></i> 타임세일</span>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-won-sign text-emerald-600"></i> N Pay 적립</span>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-sky-600"></i> 안전결제(SSL)</span>
     </div>
-  </section>
+  </div>
+
+  <!-- 안내 바 -->
+  <div class="bg-gray-50 text-center text-xs text-gray-600 font-medium py-2.5">🔄 해당 스토어는 무료 교환·반품 서비스를 제공합니다</div>
 
   <!-- 상품 섹션 제목 + 정렬 -->
   <div class="max-w-[1280px] mx-auto px-4 pt-8 flex items-center justify-between flex-wrap gap-3">
-    <h2 class="text-xl sm:text-2xl font-black">지금 인기 있는 상품 <span class="text-brand">🔥</span></h2>
+    <h2 class="text-xl sm:text-2xl font-black">지금 인기 있는 상품</h2>
     <div class="flex gap-1.5">
       <button class="sort-btn active px-3 py-1.5 rounded-full border border-gray-300 text-xs font-bold" data-sort="new" onclick="sortProducts('new')">신상품순</button>
       <button class="sort-btn px-3 py-1.5 rounded-full border border-gray-300 text-xs font-bold" data-sort="popular" onclick="sortProducts('popular')">인기순</button>
@@ -208,224 +187,240 @@
   </div>
 
   <!-- 상품 카드 8개 -->
-  <section class="products grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-4 gap-y-8 max-w-[1280px] mx-auto px-4 py-6" id="product-grid">
+  <section class="products grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-5 gap-y-9 max-w-[1280px] mx-auto px-4 py-6" id="product-grid">
 
-    <div class="card group relative" data-category="kitchen" data-id="1" data-price="25400" data-reviews="128" data-new="true">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="kitchen" data-id="1" data-price="25400" data-reviews="128" data-new="true" data-best="false">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/egg-pan.jpg" alt="4구 에그팬 팬케이크팬">
-        <span class="absolute top-2 left-2 bg-black text-white text-[11px] font-black px-2 py-1 tracking-wide">NEW</span>
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="46">♥ 46</span>
-        </div>
+        <span class="absolute top-2 left-2 bg-gray-900 text-white text-[11px] font-black px-2 py-1 rounded">NEW</span>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]"><a href="product-egg-pan.html" class="hover:underline">4구 에그팬 팬케이크팬</a></h3>
         <div class="old-price text-[12px] text-gray-400 line-through">29,900원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">25,400원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.8</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.8</span>
           <span class="review-count">(128)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="46">♥ 46</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#신상 #브런치템</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="bath" data-id="2" data-price="33200" data-reviews="54" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="bath" data-id="2" data-price="33200" data-reviews="54" data-new="false" data-best="false">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/shower-set.jpg" alt="욕실 샤워기 세트">
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="21">♥ 21</span>
-        </div>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">욕실 샤워기 세트</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">39,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">33,200원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.6</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.6</span>
           <span class="review-count">(54)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="21">♥ 21</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#욕실템 #수압강화</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="life" data-id="3" data-price="12800" data-reviews="201" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="life" data-id="3" data-price="12800" data-reviews="201" data-new="false" data-best="true">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/storage-basket.jpg" alt="다용도 정리 바구니">
-        <span class="absolute top-2 left-2 bg-brand text-white text-[11px] font-black px-2 py-1 tracking-wide">2위</span>
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="58">♥ 58</span>
-        </div>
+        <span class="absolute top-2 left-2 bg-sale text-white text-[11px] font-black px-2 py-1 rounded">BEST</span>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">다용도 정리 바구니</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">15,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">12,800원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.5</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.5</span>
           <span class="review-count">(201)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="58">♥ 58</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#수납꿀템 #생활용품</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="kitchen" data-id="4" data-price="12800" data-reviews="312" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="kitchen" data-id="4" data-price="12800" data-reviews="312" data-new="false" data-best="true">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/oven-mitts.jpg" alt="주방 오븐장갑">
-        <span class="absolute top-2 left-2 bg-brand text-white text-[11px] font-black px-2 py-1 tracking-wide">BEST 1위</span>
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="73">♥ 73</span>
-        </div>
+        <span class="absolute top-2 left-2 bg-sale text-white text-[11px] font-black px-2 py-1 rounded">BEST</span>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">귀여운 도트 오븐장갑</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">15,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">12,800원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.9</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.9</span>
           <span class="review-count">(312)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="73">♥ 73</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#베스트 #주방소품</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="bath" data-id="5" data-price="18700" data-reviews="89" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="bath" data-id="5" data-price="18700" data-reviews="89" data-new="false" data-best="false">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/beach-towel.jpg" alt="극세사 타올가운">
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="34">♥ 34</span>
-        </div>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">극세사 스트라이프 타올가운</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">22,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">18,700원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.7</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.7</span>
           <span class="review-count">(89)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="34">♥ 34</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#욕실템 #선물추천</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="life" data-id="6" data-price="75700" data-reviews="37" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="life" data-id="6" data-price="75700" data-reviews="37" data-new="false" data-best="false">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/vacuum.jpg" alt="무선 청소기">
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="12">♥ 12</span>
-        </div>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">무선 로봇 청소기</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">89,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">75,700원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.4</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.4</span>
           <span class="review-count">(37)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="12">♥ 12</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#생활가전 #청소템</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="kitchen" data-id="7" data-price="15300" data-reviews="76" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="kitchen" data-id="7" data-price="15300" data-reviews="76" data-new="false" data-best="false">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/cutting-board.jpg" alt="원목 도마">
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="27">♥ 27</span>
-        </div>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">원목 주방 도마</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">18,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">15,300원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.6</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.6</span>
           <span class="review-count">(76)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="27">♥ 27</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#주방소품 #원목</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
 
-    <div class="card group relative" data-category="bath" data-id="8" data-price="5100" data-reviews="152" data-new="false">
-      <div class="photo-wrap relative overflow-hidden bg-gray-100 aspect-square">
+    <div class="card group relative" data-category="bath" data-id="8" data-price="5100" data-reviews="152" data-new="false" data-best="true">
+      <div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">
         <img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="images/shower-ball.jpg" alt="샤워볼">
-        <span class="absolute top-2 left-2 bg-brand text-white text-[11px] font-black px-2 py-1 tracking-wide">3위</span>
-        <div class="absolute top-2 right-2 flex flex-col items-center gap-1">
-          <button class="wish-btn w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 text-base shadow" onclick="toggleWish(this)">♥</button>
-          <span class="wish-count text-[10px] font-bold text-gray-700 bg-white/90 px-1.5 py-0.5 rounded-full shadow" data-count="40">♥ 40</span>
-        </div>
+        <span class="absolute top-2 left-2 bg-sale text-white text-[11px] font-black px-2 py-1 rounded">BEST</span>
+        <button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>
       </div>
       <div class="pt-3">
         <h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">거품 샤워볼</h3>
         <div class="old-price text-[12px] text-gray-400 line-through">6,000원</div>
         <div class="price-row flex items-baseline gap-1.5 mt-0.5">
-          <span class="discount-rate text-brand text-base font-black">15%</span>
+          <span class="discount-rate text-sale text-base font-black">15%</span>
           <span class="price text-lg font-black">5,100원</span>
         </div>
         <div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">
-          <span class="text-yellow-500 font-bold">★4.3</span>
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span class="font-bold text-gray-600">4.3</span>
           <span class="review-count">(152)</span>
+          <span class="wish-count ml-auto text-sale font-bold" data-count="40">♥ 40</span>
         </div>
-        <div class="tags text-[11px] text-gray-400 mt-1">#욕실템 #가성비</div>
+        <div class="flex items-center gap-1 mt-2">
+          <span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>
+        </div>
         <div class="btn-row flex gap-1.5 mt-3">
-          <button class="cart-btn flex-1 border border-black text-[11px] sm:text-xs font-bold py-2 hover:bg-black hover:text-white transition" onclick="addToCart(this)">장바구니</button>
-          <button class="flex-1 bg-black text-white text-[11px] sm:text-xs font-bold py-2 hover:bg-brand transition" onclick="showAlert('구매되었습니다!')">구매하기</button>
+          <button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>
+          <button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast('구매되었습니다!')">구매하기</button>
         </div>
       </div>
     </div>
@@ -433,7 +428,7 @@
   </section>
 
   <!-- 쇼핑몰 소개 -->
-  <section class="bg-gray-50 border-t border-black py-16 text-center">
+  <section class="bg-gray-50 border-t border-gray-100 py-14 text-center">
     <div class="max-w-[640px] mx-auto px-4">
       <div class="text-3xl mb-3">🏡</div>
       <h2 class="text-xl font-black mb-3">빈이율이샵을 소개합니다</h2>
@@ -445,11 +440,50 @@
     </div>
   </section>
 
-  <!-- 하단 연락처 -->
-  <footer class="bg-black text-gray-400 text-center py-8 text-xs">
-    <div class="max-w-[1280px] mx-auto px-4">
-      <p>고객센터: 010-3371-2212 | 이메일: help@binyul.shop</p>
-      <p class="mt-1">운영시간: 평일 09:00 ~ 18:00</p>
+  <!-- 하단: 신뢰도 요소 + 푸터 -->
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-[1280px] mx-auto px-4 py-10">
+
+      <!-- 고객센터 -->
+      <div class="grid sm:grid-cols-3 gap-6 pb-8 border-b border-gray-100">
+        <div class="flex items-start gap-3">
+          <i class="fa-solid fa-headset text-brand text-xl mt-0.5"></i>
+          <div>
+            <p class="text-sm font-black">고객센터 010-3371-2212</p>
+            <p class="text-xs text-gray-500 mt-1">평일 09:00 ~ 18:00 (주말·공휴일 휴무)</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <button onclick="showToast('카카오톡 상담은 준비 중입니다.')" class="flex items-center gap-2 bg-yellow-300 hover:bg-yellow-400 transition text-gray-900 text-xs font-bold px-4 py-2.5 rounded-lg">
+            <i class="fa-solid fa-comment"></i> 카카오톡 상담하기
+          </button>
+        </div>
+        <div class="flex items-start gap-3">
+          <i class="fa-solid fa-envelope text-brand text-xl mt-0.5"></i>
+          <div>
+            <p class="text-sm font-black">help@binyul.shop</p>
+            <p class="text-xs text-gray-500 mt-1">1:1 문의는 이메일로 받고 있어요</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 배송/교환/반품 & 안전결제 -->
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 py-6 border-b border-gray-100 text-xs text-gray-500 font-medium">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck text-gray-400"></i> 평균 1~2일 내 출고</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-rotate-left text-gray-400"></i> 수령 후 7일 이내 무료 교환·반품</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-gray-400"></i> SSL 보안 결제</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-gray-400"></i> 안전거래 에스크로 적용</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-gray-400"></i> N Pay 간편결제</span>
+      </div>
+
+      <!-- 사업자 정보 -->
+      <div class="pt-6 text-[11px] text-gray-400 leading-relaxed">
+        <p>상호명: 빈이율이샵 (예시) &nbsp;|&nbsp; 대표자: 홍길동 (예시) &nbsp;|&nbsp; 사업자등록번호: 123-45-67890 (예시)</p>
+        <p class="mt-1">통신판매업신고: 제2026-서울강남-00000호 (예시) &nbsp;|&nbsp; 주소: 서울특별시 강남구 테헤란로 000, 00층 (예시)</p>
+        <p class="mt-1">개인정보관리책임자: 홍길동 (privacy@binyul.shop, 예시) &nbsp;|&nbsp; 호스팅 제공: GitHub Pages</p>
+        <p class="mt-3 text-gray-400">※ 위 사업자 정보는 데모 프로토타입용 예시이며 실제 등록 정보가 아닙니다. 실제 서비스 운영 시 반드시 실제 사업자 정보로 교체해 주세요.</p>
+        <p class="mt-4 text-gray-300">© 2026 빈이율이샵. All rights reserved.</p>
+      </div>
     </div>
   </footer>
 
@@ -560,7 +594,7 @@
       clearTimeout(toast._hideTimer);
       toast._hideTimer = setTimeout(function () {
         toast.classList.remove('show');
-      }, 1500);
+      }, 1800);
     }
 
     // 로그아웃 (로그인 상태에서 상단 버튼 클릭 시)
@@ -575,12 +609,13 @@
 
     // 로그인 상태에 따라 상단 버튼 표시 갱신
     function updateAuthWidget(user) {
+      var textEl = document.getElementById('auth-widget-text');
       var widget = document.getElementById('auth-widget');
       if (user) {
-        widget.textContent = user.email + ' · 로그아웃';
+        textEl.textContent = user.email.split('@')[0] + '님';
         widget.onclick = handleSignOut;
       } else {
-        widget.textContent = '로그인/회원가입';
+        textEl.textContent = '마이페이지';
         widget.onclick = toggleAuth;
       }
     }
@@ -672,7 +707,7 @@
       }
 
       renderCart();
-      showAlert('장바구니에 담았습니다!');
+      showToast('장바구니에 담았습니다!');
       syncCartItemToServer(productId, existing.qty);
     }
 
@@ -722,16 +757,16 @@
           ? item.priceValue.toLocaleString() + '원 × ' + item.qty + ' = ' + subtotal.toLocaleString() + '원'
           : item.priceValue.toLocaleString() + '원';
         return (
-          '<div class="cart-item py-3 border-b border-gray-200">' +
+          '<div class="cart-item py-3 border-b border-gray-100">' +
             '<div class="cart-item-top flex items-center justify-between gap-2 mb-2">' +
               '<span class="cart-item-name text-sm font-bold">' + item.name + '</span>' +
-              '<button class="cart-remove-btn text-[11px] font-bold text-gray-400 border border-gray-300 px-2 py-1 hover:bg-black hover:text-white hover:border-black transition" onclick="removeItem(' + index + ')">삭제</button>' +
+              '<button class="cart-remove-btn text-[11px] font-bold text-gray-400 border border-gray-200 rounded px-2 py-1 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition" onclick="removeItem(' + index + ')">삭제</button>' +
             '</div>' +
             '<div class="cart-item-bottom flex items-center justify-between gap-2">' +
               '<div class="qty-stepper flex items-center gap-2">' +
-                '<button class="qty-btn w-6 h-6 flex items-center justify-center border border-black text-xs font-bold disabled:border-gray-300 disabled:text-gray-300" onclick="decreaseQty(' + index + ')"' + (item.qty <= 1 ? ' disabled' : '') + '>-</button>' +
+                '<button class="qty-btn w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-xs font-bold disabled:border-gray-200 disabled:text-gray-300" onclick="decreaseQty(' + index + ')"' + (item.qty <= 1 ? ' disabled' : '') + '>-</button>' +
                 '<span class="qty-value text-xs font-bold w-4 text-center">' + item.qty + '</span>' +
-                '<button class="qty-btn w-6 h-6 flex items-center justify-center border border-black text-xs font-bold" onclick="increaseQty(' + index + ')">+</button>' +
+                '<button class="qty-btn w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-xs font-bold" onclick="increaseQty(' + index + ')">+</button>' +
               '</div>' +
               '<span class="cart-item-price text-brand text-xs font-black">' + priceText + '</span>' +
             '</div>' +
@@ -740,7 +775,7 @@
       }).join('');
 
       var totalHtml =
-        '<div class="cart-total flex items-center justify-between mt-3 pt-4 border-t-2 border-black text-sm font-black">' +
+        '<div class="cart-total flex items-center justify-between mt-3 pt-4 border-t-2 border-gray-900 text-sm font-black">' +
           '<span>총 합계</span>' +
           '<span class="cart-total-amount text-brand text-lg">' + grandTotal.toLocaleString() + '원</span>' +
         '</div>';
@@ -756,7 +791,7 @@
       var totalQty = cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
       var grandTotal = cart.reduce(function (sum, item) { return sum + item.priceValue * item.qty; }, 0);
 
-      showAlert('총 ' + totalQty + '개 상품, ' + grandTotal.toLocaleString() + '원 주문이 완료되었습니다!');
+      showToast('총 ' + totalQty + '개 상품, ' + grandTotal.toLocaleString() + '원 주문이 완료되었습니다!');
 
       cart.forEach(function (item) {
         deleteCartItemFromServer(item.productId);
@@ -784,19 +819,30 @@
       countEl.textContent = '♥ ' + count;
     }
 
-    // 메뉴 클릭 시 상품 필터링
-    function filterProducts(category, clickedLink) {
-      document.querySelectorAll('nav a').forEach(function (link) {
+    // 카테고리 탭(ALL/BEST/NEW) 클릭 시 상품 필터링
+    function filterByTab(tab, clickedLink) {
+      document.querySelectorAll('.cat-tab').forEach(function (link) {
         link.classList.remove('active');
       });
       clickedLink.classList.add('active');
 
       document.querySelectorAll('.card').forEach(function (card) {
-        if (category === 'all' || card.dataset.category === category) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
+        var show = true;
+        if (tab === 'best') {
+          show = card.dataset.best === 'true';
+        } else if (tab === 'new') {
+          show = card.dataset.new === 'true';
         }
+        card.style.display = show ? '' : 'none';
+      });
+    }
+
+    // 검색창 입력 상품명 기준 검색
+    function searchProducts() {
+      var query = document.getElementById('search-input').value.trim().toLowerCase();
+      document.querySelectorAll('.card').forEach(function (card) {
+        var name = card.querySelector('h3').textContent.toLowerCase();
+        card.style.display = (query === '' || name.indexOf(query) !== -1) ? '' : 'none';
       });
     }
 
