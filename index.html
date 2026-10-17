@@ -93,7 +93,27 @@
       <div id="cart-list">
         <div class="cart-empty text-center text-gray-400 text-sm py-10">담긴 상품이 없습니다</div>
       </div>
-      <button class="order-btn w-full mt-4 py-3.5 rounded-lg bg-brand text-white font-black text-sm disabled:bg-gray-200 disabled:text-gray-400 hover:bg-green-700 disabled:hover:bg-gray-200 transition" id="order-btn" onclick="placeOrder()" disabled>주문하기</button>
+      <button class="order-btn w-full mt-4 py-3.5 rounded-lg bg-brand text-white font-black text-sm disabled:bg-gray-200 disabled:text-gray-400 hover:bg-green-700 disabled:hover:bg-gray-200 transition" id="order-btn" onclick="openOrderForm()" disabled>주문하기</button>
+    </div>
+  </div>
+
+  <!-- 주문서 모달 -->
+  <div class="cart-modal-overlay fixed inset-0 z-[1000] items-center justify-center bg-black/60 p-5" id="order-form-modal-overlay" onclick="closeOrderFormOnOverlay(event)">
+    <div class="bg-white w-[420px] max-w-full max-h-[85vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
+      <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
+        <h2 class="text-lg font-black"><i class="fa-solid fa-file-invoice text-brand"></i> 주문서</h2>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleOrderForm()">✕</button>
+      </div>
+
+      <h3 class="text-sm font-black mb-2">주문 상품</h3>
+      <div id="order-form-summary" class="mb-6"></div>
+
+      <h3 class="text-sm font-black mb-2">배송 정보</h3>
+      <input type="text" id="order-name" placeholder="받는 사람 이름" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+      <input type="tel" id="order-phone" placeholder="연락처 (예: 010-1234-5678)" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+      <input type="text" id="order-address" placeholder="배송 주소를 입력해주세요" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+
+      <button class="w-full mt-2 py-3.5 rounded-lg bg-brand text-white font-black text-sm hover:bg-green-700 transition" onclick="confirmOrderForm()">주문 완료</button>
     </div>
   </div>
 
@@ -528,6 +548,72 @@
       if (event.target.id === 'cart-modal-overlay') {
         toggleCart();
       }
+    }
+
+    // 주문서 모달 열기 (로그인 상태 + 장바구니에 상품이 있어야 열림)
+    function openOrderForm() {
+      if (!currentUser) {
+        showToast('로그인 후 이용해주세요.');
+        return;
+      }
+      if (cart.length === 0) {
+        showToast('장바구니가 비어 있습니다.');
+        return;
+      }
+      renderOrderFormSummary();
+      document.getElementById('cart-modal-overlay').classList.remove('open');
+      document.getElementById('order-form-modal-overlay').classList.add('open');
+    }
+
+    // 주문서 모달 열기/닫기 토글
+    function toggleOrderForm() {
+      document.getElementById('order-form-modal-overlay').classList.toggle('open');
+    }
+
+    // 모달 바깥(어두운 배경) 클릭 시 닫기
+    function closeOrderFormOnOverlay(event) {
+      if (event.target.id === 'order-form-modal-overlay') {
+        toggleOrderForm();
+      }
+    }
+
+    // 주문서에 담긴 상품 목록/합계 표시 (장바구니 데이터를 그대로 보여주기만 함)
+    function renderOrderFormSummary() {
+      var summaryEl = document.getElementById('order-form-summary');
+      var grandTotal = 0;
+      var rowsHtml = cart.map(function (item) {
+        var subtotal = item.priceValue * item.qty;
+        grandTotal += subtotal;
+        return (
+          '<div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-100">' +
+            '<span>' + item.name + ' x' + item.qty + '</span>' +
+            '<span class="font-bold">' + subtotal.toLocaleString() + '원</span>' +
+          '</div>'
+        );
+      }).join('');
+
+      var totalHtml =
+        '<div class="flex items-center justify-between mt-2 pt-3 border-t-2 border-gray-900 text-sm font-black">' +
+          '<span>총 합계</span>' +
+          '<span class="text-brand">' + grandTotal.toLocaleString() + '원</span>' +
+        '</div>';
+
+      summaryEl.innerHTML = rowsHtml + totalHtml;
+    }
+
+    // 주문서의 "주문 완료" 버튼 클릭
+    // ※ 요청대로 아직 실제 저장(결제/주문 기록)은 연결하지 않고 화면 동작만 구현한 상태입니다.
+    function confirmOrderForm() {
+      var name = document.getElementById('order-name').value.trim();
+      var phone = document.getElementById('order-phone').value.trim();
+      var address = document.getElementById('order-address').value.trim();
+
+      if (!name || !phone || !address) {
+        showToast('받는 사람 정보를 모두 입력해주세요.');
+        return;
+      }
+
+      showToast('주문서 화면입니다. 저장 기능은 추후 연결될 예정입니다.');
     }
 
     // 장바구니 버튼 클릭 시 담기
