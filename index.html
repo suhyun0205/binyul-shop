@@ -3,30 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="주방·욕실·생활용품을 한 곳에서. 빈이율이샵에서 실용적인 생활용품을 합리적인 가격에 만나보세요.">
+<link rel="icon" href="favicon.ico">
 <title>빈이율이샵</title>
-<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
     theme: {
       extend: {
-        colors: { brand: '#16A34A', sale: '#E5342F' },
-        fontFamily: { sans: ['Pretendard', 'Malgun Gothic', 'sans-serif'] }
+        colors: { brand: '#16A34A', sale: '#C92A2A' },
+        fontFamily: { sans: ['Pretendard Variable', 'Malgun Gothic', 'sans-serif'] }
       }
     }
   };
 </script>
 <style>
-  body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; }
+  body { font-family: 'Pretendard Variable', 'Malgun Gothic', sans-serif; }
 
   /* JS가 토글하는 상태 클래스 (Tailwind 유틸리티만으로 표현하기 어려운 부분) */
   .cart-modal-overlay { display: none; }
   .cart-modal-overlay.open { display: flex; }
   .toast { opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translate(-50%, 10px); }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
-  .wish-btn.active { color: #E5342F; }
-  .cat-tab.active { color: #16A34A; border-bottom-color: #16A34A; }
+  .wish-btn.active { color: #C92A2A; }
+  .cat-tab.active { color: #15803D; border-bottom-color: #16A34A; }
   .sort-btn.active { background: #111111; color: #ffffff; border-color: #111111; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -51,20 +53,21 @@
         <h1 class="text-lg sm:text-xl font-black tracking-tight">빈이율이<span class="text-brand">샵</span></h1>
       </div>
 
-      <div class="flex-1 flex items-center bg-gray-100 rounded-full px-4 py-2 mx-1 sm:mx-4">
-        <input id="search-input" type="text" placeholder="상품을 검색해보세요" class="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
-        <button onclick="searchProducts()" aria-label="검색" class="text-gray-500 hover:text-brand">
+      <div class="flex-1 min-w-0 flex items-center bg-gray-100 rounded-full px-3 sm:px-4 py-2 mx-1 sm:mx-4">
+        <label for="search-input" class="sr-only">상품 검색</label>
+        <input id="search-input" type="text" placeholder="상품을 검색해보세요" class="flex-1 min-w-0 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
+        <button onclick="searchProducts()" aria-label="검색" class="shrink-0 w-8 h-8 -mr-1 flex items-center justify-center text-gray-500 hover:text-brand">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
 
-      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+      <div class="flex items-center gap-1 sm:gap-3 shrink-0">
         <button id="auth-widget" onclick="location.href='login.html'" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
           <i class="fa-regular fa-user text-lg"></i>
           <span id="auth-widget-text" class="inline-block align-middle text-xs font-bold max-w-[90px] sm:max-w-[160px] truncate">로그인</span>
         </button>
         <button id="logout-btn" onclick="handleSignOut()" class="hidden text-xs font-bold text-gray-400 hover:text-sale">로그아웃</button>
-        <button onclick="toggleCart()" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
+        <button onclick="toggleCart()" aria-label="장바구니" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
           <i class="fa-solid fa-cart-shopping text-lg"></i>
           <span id="cart-count" class="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-sale text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
         </button>
@@ -88,7 +91,7 @@
     <div class="bg-white w-[380px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
       <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
         <h2 class="text-lg font-black"><i class="fa-solid fa-cart-shopping text-brand"></i> 장바구니</h2>
-        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleCart()">✕</button>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleCart()" aria-label="닫기">✕</button>
       </div>
       <div id="cart-list">
         <div class="cart-empty text-center text-gray-400 text-sm py-10">담긴 상품이 없습니다</div>
@@ -102,7 +105,7 @@
     <div class="bg-white w-[420px] max-w-full max-h-[85vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
       <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
         <h2 class="text-lg font-black"><i class="fa-solid fa-file-invoice text-brand"></i> 주문서</h2>
-        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleOrderForm()">✕</button>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleOrderForm()" aria-label="닫기">✕</button>
       </div>
 
       <!-- 입력 화면 -->
@@ -111,8 +114,11 @@
         <div id="order-form-summary" class="mb-6"></div>
 
         <h3 class="text-sm font-black mb-2">배송 정보</h3>
+        <label for="order-name" class="sr-only">받는 사람 이름</label>
         <input type="text" id="order-name" placeholder="받는 사람 이름" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <label for="order-phone" class="sr-only">연락처</label>
         <input type="tel" id="order-phone" placeholder="연락처 (예: 010-1234-5678)" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
+        <label for="order-address" class="sr-only">배송 주소</label>
         <input type="text" id="order-address" placeholder="배송 주소를 입력해주세요" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm mb-2.5 focus:outline-none focus:border-brand">
 
         <button class="w-full mt-2 py-3.5 rounded-lg bg-brand text-white font-black text-sm hover:bg-green-700 transition" onclick="goToOrderConfirm()">다음</button>
@@ -154,12 +160,13 @@
     <div class="bg-white w-[420px] max-w-full max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-2xl">
       <div class="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
         <h2 class="text-lg font-black"><i class="fa-regular fa-user text-brand"></i> 마이페이지</h2>
-        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleMypage()">✕</button>
+        <button class="cart-modal-close text-xl font-bold leading-none text-gray-400 hover:text-gray-900" onclick="toggleMypage()" aria-label="닫기">✕</button>
       </div>
       <div id="mypage-content"></div>
     </div>
   </div>
 
+  <main>
   <!-- 메인 롤링 배너 -->
   <section class="relative bg-gray-900 overflow-hidden">
     <div id="banner-track" class="banner-track flex">
@@ -194,7 +201,6 @@
       <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> 오늘출발</span>
       <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck-fast text-brand"></i> 무료배송</span>
       <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-sale"></i> 타임세일</span>
-      <span class="flex items-center gap-1.5"><i class="fa-solid fa-won-sign text-emerald-600"></i> N Pay 적립</span>
       <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-sky-600"></i> 안전결제(SSL)</span>
     </div>
   </div>
@@ -229,6 +235,7 @@
       </p>
     </div>
   </section>
+  </main>
 
   <!-- 하단: 신뢰도 요소 + 푸터 -->
   <footer class="bg-white border-t border-gray-200">
@@ -261,9 +268,7 @@
       <div class="flex flex-wrap items-center gap-x-6 gap-y-2 py-6 border-b border-gray-100 text-xs text-gray-500 font-medium">
         <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck text-gray-400"></i> 평균 1~2일 내 출고</span>
         <span class="flex items-center gap-1.5"><i class="fa-solid fa-rotate-left text-gray-400"></i> 수령 후 7일 이내 무료 교환·반품</span>
-        <span class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-gray-400"></i> SSL 보안 결제</span>
-        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-gray-400"></i> 안전거래 에스크로 적용</span>
-        <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-gray-400"></i> N Pay 간편결제</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-gray-400"></i> SSL 보안 연결</span>
       </div>
 
       <!-- 사업자 정보 -->
@@ -307,28 +312,21 @@
           '<div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">' +
             '<img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="' + p.image_url + '" alt="' + p.name + '">' +
             badgeHtml +
-            '<button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)"><i class="fa-solid fa-heart"></i></button>' +
+            '<button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)" aria-label="찜하기"><i class="fa-solid fa-heart"></i></button>' +
           '</div>' +
           '<div class="pt-3">' +
             '<h3 class="text-[13px] font-bold leading-snug line-clamp-2 mb-1.5 min-h-[36px]">' + nameHtml + '</h3>' +
-            '<div class="old-price text-[12px] text-gray-400 line-through">' + p.old_price.toLocaleString() + '원</div>' +
+            '<div class="old-price text-[12px] text-gray-500 line-through">' + p.old_price.toLocaleString() + '원</div>' +
             '<div class="price-row flex items-baseline gap-1.5 mt-0.5">' +
               '<span class="discount-rate text-sale text-base font-black">' + p.discount_rate + '%</span>' +
               '<span class="price text-lg font-black">' + p.price.toLocaleString() + '원</span>' +
             '</div>' +
-            '<div class="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400">' +
-              '<i class="fa-solid fa-star text-amber-400"></i>' +
-              '<span class="font-bold text-gray-600">' + Number(p.rating) + '</span>' +
-              '<span class="review-count">(' + p.review_count + ')</span>' +
-              '<span class="wish-count ml-auto text-sale font-bold" data-count="' + p.wish_count + '">♥ ' + p.wish_count + '</span>' +
-            '</div>' +
             '<div class="flex items-center gap-1 mt-2">' +
               '<span class="text-[10px] font-bold text-brand bg-green-50 px-1.5 py-0.5 rounded">무료배송</span>' +
-              '<span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">N페이 가능</span>' +
             '</div>' +
             '<div class="btn-row flex gap-1.5 mt-3">' +
               '<button class="cart-btn flex-1 border border-gray-300 rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:border-brand hover:text-brand transition" onclick="addToCart(this)">장바구니</button>' +
-              '<button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="showToast(\'구매되었습니다!\')">구매하기</button>' +
+              '<button class="flex-1 bg-brand text-white rounded-lg text-[11px] sm:text-xs font-bold py-2 hover:bg-green-700 transition" onclick="buyNow(this)">구매하기</button>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -688,6 +686,27 @@
       syncCartItemToServer(productId, existing.qty);
     }
 
+    // 구매하기 버튼 클릭 시 담고 바로 주문서로 이동 (가짜 "구매 완료" 메시지 대신 실제 주문서 화면을 보여줌)
+    function buyNow(btn) {
+      var card = btn.closest('.card');
+      var productId = parseInt(card.dataset.id, 10);
+      var name = card.querySelector('h3').textContent.trim();
+      var priceText = card.querySelector('.price').textContent.trim();
+      var priceValue = parseInt(priceText.replace(/[^0-9]/g, ''), 10);
+
+      var existing = cart.find(function (item) { return item.productId === productId; });
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        existing = { productId: productId, name: name, priceValue: priceValue, qty: 1 };
+        cart.push(existing);
+      }
+
+      renderCart();
+      syncCartItemToServer(productId, existing.qty);
+      openOrderForm();
+    }
+
     // 수량 [+] 버튼 클릭 시 1 증가
     function increaseQty(index) {
       cart[index].qty += 1;
@@ -789,22 +808,9 @@
       toggleCart();
     }
 
-    // 하트 버튼 클릭 시 찜하기 토글
+    // 하트 버튼 클릭 시 찜하기 토글 (집계 수치는 실제 데이터가 아니므로 표시하지 않고 상태만 전환)
     function toggleWish(btn) {
-      var card = btn.closest('.card');
-      var countEl = card.querySelector('.wish-count');
-      var count = parseInt(countEl.dataset.count, 10);
-
-      if (btn.classList.contains('active')) {
-        btn.classList.remove('active');
-        count -= 1;
-      } else {
-        btn.classList.add('active');
-        count += 1;
-      }
-
-      countEl.dataset.count = count;
-      countEl.textContent = '♥ ' + count;
+      btn.classList.toggle('active');
     }
 
     // 카테고리 탭(ALL/BEST/NEW) 클릭 시 상품 필터링
@@ -870,7 +876,7 @@
       var dotsEl = document.getElementById('banner-dots');
       var html = '';
       for (var i = 0; i < bannerSlideCount; i++) {
-        html += '<button onclick="goToSlide(' + i + ')" class="w-2 h-2 rounded-full ' + (i === bannerIndex ? 'bg-white' : 'bg-white/40') + '"></button>';
+        html += '<button onclick="goToSlide(' + i + ')" aria-label="배너 ' + (i + 1) + '번으로 이동" class="w-2 h-2 rounded-full ' + (i === bannerIndex ? 'bg-white' : 'bg-white/40') + '"></button>';
       }
       dotsEl.innerHTML = html;
     }
