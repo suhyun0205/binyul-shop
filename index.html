@@ -35,7 +35,6 @@
   .sort-btn.active { background: #111111; color: #ffffff; border-color: #111111; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  .banner-track { transition: transform .5s ease; }
 </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -98,7 +97,7 @@
     <!-- 2단: 전체카테고리 버튼 + 빠른 메뉴 + 계정/장바구니 -->
     <div class="border-t border-gray-100">
       <div class="max-w-[1280px] mx-auto px-4 py-2.5 flex items-center gap-5">
-        <button onclick="filterByTab('all', document.getElementById('tab-all-mobile'))" class="flex items-center gap-2 bg-brand text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shrink-0 hover:bg-blue-800 transition">
+        <button onclick="filterByCategory('all')" class="flex items-center gap-2 bg-brand text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shrink-0 hover:bg-blue-800 transition">
           <i class="fa-solid fa-bars"></i> <span class="hidden sm:inline">전체카테고리</span>
         </button>
         <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">베스트100</a>
@@ -227,58 +226,55 @@
   </div>
 
   <main>
-  <!-- 메인 롤링 배너 -->
-  <div class="max-w-[1280px] mx-auto px-4 py-4">
-    <section class="relative bg-gray-900 overflow-hidden rounded-lg">
-      <div id="banner-track" class="banner-track flex h-[175px] sm:h-[215px] lg:h-[267px]">
-        <div class="w-full flex-shrink-0 relative bg-teal-700 overflow-hidden">
-          <div class="relative h-full flex items-center px-5 sm:px-10">
-            <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
-              <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">텀블러·보온병</span>
-              <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">기업·단체 행사 선물<br>소소기프트에서 한 번에</h2>
-              <p class="hidden sm:block text-[11px] text-white/70 mb-2">#행사용품 #단체구매</p>
-              <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-brand hover:text-white transition">견적 문의하기</button>
-            </div>
-            <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
-              <img src="images/products/tumbler-1.png" class="max-w-full max-h-full object-contain" alt="텀블러">
-            </div>
+  <!-- 메인 롤링 배너 (여러 카드가 동시에 보이는 가로 스크롤형) -->
+  <div class="max-w-[1280px] mx-auto px-4 py-4 relative">
+    <div id="banner-track" class="flex gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
+      <div class="snap-start shrink-0 w-[82%] sm:w-[58%] lg:w-[47%] relative bg-teal-700 overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px]">
+        <div class="relative h-full flex items-center px-5 sm:px-10">
+          <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
+            <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">텀블러·보온병</span>
+            <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">기업·단체 행사 선물<br>소소기프트에서 한 번에</h2>
+            <p class="hidden sm:block text-[11px] text-white/70 mb-2">#행사용품 #단체구매</p>
+            <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-brand hover:text-white transition">견적 문의하기</button>
           </div>
-        </div>
-        <div class="w-full flex-shrink-0 relative bg-indigo-800 overflow-hidden">
-          <div class="relative h-full flex items-center px-5 sm:px-10">
-            <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
-              <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">가방·에코백</span>
-              <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">로고 인쇄·각인<br>무료 샘플 상담 가능</h2>
-              <p class="hidden sm:block text-[11px] text-white/70 mb-2">#로고인쇄 #에코백</p>
-              <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-brand hover:text-white transition">상담 신청</button>
-            </div>
-            <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
-              <img src="images/products/bag-1.jpg" class="max-w-full max-h-full object-contain" alt="에코백">
-            </div>
-          </div>
-        </div>
-        <div class="w-full flex-shrink-0 relative bg-amber-800 overflow-hidden">
-          <div class="relative h-full flex items-center px-5 sm:px-10">
-            <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
-              <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">모자</span>
-              <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">대량주문 할인<br>소량주문도 가능해요</h2>
-              <p class="hidden sm:block text-[11px] text-white/70 mb-2">#대량주문 #소량가능</p>
-              <button onclick="filterByCategory('all')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-sale hover:text-white transition">카테고리 보기</button>
-            </div>
-            <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
-              <img src="images/products/cap-1.png" class="max-w-full max-h-full object-contain" alt="모자">
-            </div>
+          <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
+            <img src="images/products/tumbler-1.png" class="max-w-full max-h-full object-contain" alt="텀블러">
           </div>
         </div>
       </div>
-      <button onclick="prevSlide()" aria-label="이전 배너" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <button onclick="nextSlide()" aria-label="다음 배너" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-      <div id="banner-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"></div>
-    </section>
+      <div class="snap-start shrink-0 w-[82%] sm:w-[58%] lg:w-[47%] relative bg-indigo-800 overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px]">
+        <div class="relative h-full flex items-center px-5 sm:px-10">
+          <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
+            <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">가방·에코백</span>
+            <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">로고 인쇄·각인<br>무료 샘플 상담 가능</h2>
+            <p class="hidden sm:block text-[11px] text-white/70 mb-2">#로고인쇄 #에코백</p>
+            <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-brand hover:text-white transition">상담 신청</button>
+          </div>
+          <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
+            <img src="images/products/bag-1.jpg" class="max-w-full max-h-full object-contain" alt="에코백">
+          </div>
+        </div>
+      </div>
+      <div class="snap-start shrink-0 w-[82%] sm:w-[58%] lg:w-[47%] relative bg-amber-800 overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px]">
+        <div class="relative h-full flex items-center px-5 sm:px-10">
+          <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
+            <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">모자</span>
+            <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">대량주문 할인<br>소량주문도 가능해요</h2>
+            <p class="hidden sm:block text-[11px] text-white/70 mb-2">#대량주문 #소량가능</p>
+            <button onclick="filterByCategory('all')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-sale hover:text-white transition">카테고리 보기</button>
+          </div>
+          <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
+            <img src="images/products/cap-1.png" class="max-w-full max-h-full object-contain" alt="모자">
+          </div>
+        </div>
+      </div>
+    </div>
+    <button onclick="prevSlide()" aria-label="이전 배너" class="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md hover:bg-gray-50 text-gray-700 items-center justify-center">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button onclick="nextSlide()" aria-label="다음 배너" class="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md hover:bg-gray-50 text-gray-700 items-center justify-center">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
   </div>
 
   <!-- 카테고리 아이콘 그리드 -->
@@ -1130,51 +1126,40 @@
     }
 
     // 메인 배너 스와이프
-    var bannerIndex = 0;
-    var bannerSlideCount = 3;
+    // 배너: 여러 카드가 동시에 보이는 가로 스크롤 (스크롤 위치 기반으로 이전/다음 버튼 동작)
     var bannerTimer = null;
 
-    function renderBannerDots() {
-      var dotsEl = document.getElementById('banner-dots');
-      var html = '';
-      for (var i = 0; i < bannerSlideCount; i++) {
-        html += '<button onclick="goToSlide(' + i + ')" aria-label="배너 ' + (i + 1) + '번으로 이동" class="w-2 h-2 rounded-full ' + (i === bannerIndex ? 'bg-white' : 'bg-white/40') + '"></button>';
-      }
-      dotsEl.innerHTML = html;
+    function bannerCardStep() {
+      var track = document.getElementById('banner-track');
+      var firstCard = track.firstElementChild;
+      return firstCard ? firstCard.getBoundingClientRect().width + 12 : track.clientWidth;
     }
 
-    function updateBannerTrack() {
-      document.getElementById('banner-track').style.transform = 'translateX(-' + (bannerIndex * 100) + '%)';
-      renderBannerDots();
+    function nextSlide() {
+      var track = document.getElementById('banner-track');
+      var step = bannerCardStep();
+      var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+      track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step, behavior: 'smooth' });
+      restartBannerTimer();
+    }
+
+    function prevSlide() {
+      var track = document.getElementById('banner-track');
+      var step = bannerCardStep();
+      track.scrollTo({ left: Math.max(0, track.scrollLeft - step), behavior: 'smooth' });
+      restartBannerTimer();
     }
 
     function restartBannerTimer() {
       clearInterval(bannerTimer);
       bannerTimer = setInterval(function () {
-        bannerIndex = (bannerIndex + 1) % bannerSlideCount;
-        updateBannerTrack();
+        var track = document.getElementById('banner-track');
+        var step = bannerCardStep();
+        var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+        track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step, behavior: 'smooth' });
       }, 4000);
     }
 
-    function goToSlide(i) {
-      bannerIndex = i;
-      updateBannerTrack();
-      restartBannerTimer();
-    }
-
-    function nextSlide() {
-      bannerIndex = (bannerIndex + 1) % bannerSlideCount;
-      updateBannerTrack();
-      restartBannerTimer();
-    }
-
-    function prevSlide() {
-      bannerIndex = (bannerIndex - 1 + bannerSlideCount) % bannerSlideCount;
-      updateBannerTrack();
-      restartBannerTimer();
-    }
-
-    updateBannerTrack();
     restartBannerTimer();
   </script>
 
