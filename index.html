@@ -336,11 +336,24 @@
   </section>
 
   <!-- 시즌 상품 -->
-  <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
-    <h2 class="text-xl sm:text-2xl font-black mb-4">시즌 상품</h2>
-    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
-      <i class="fa-regular fa-snowflake text-2xl mb-2 block"></i>
-      이번 시즌 추천 상품을 준비하고 있어요
+  <section class="bg-[#FBF7F2] py-10 border-t border-gray-100 relative">
+    <div class="max-w-[1280px] mx-auto px-4">
+      <div class="flex items-center justify-between mb-6">
+        <button onclick="seasonalScroll(-1)" aria-label="이전" class="hidden sm:flex w-8 h-8 rounded-full border border-gray-200 bg-white hover:bg-gray-50 items-center justify-center text-gray-500">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <div class="text-center flex-1">
+          <p class="text-xs text-gray-500 font-medium mb-1">행사, 단체선물, 환영선물 굿즈 판촉물 모음</p>
+          <h2 class="text-xl sm:text-2xl font-black">🍁 가을시즌 인기 굿즈 판촉물</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="filterByCategory('all')" class="hidden sm:inline-block text-xs font-bold text-gray-500 border border-gray-300 rounded-full px-3 py-1.5 hover:bg-white transition">전체보기 ></button>
+          <button onclick="seasonalScroll(1)" aria-label="다음" class="hidden sm:flex w-8 h-8 rounded-full border border-gray-200 bg-white hover:bg-gray-50 items-center justify-center text-gray-500">
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+      <div id="seasonal-track" class="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory"></div>
     </div>
   </section>
 
@@ -1156,6 +1169,77 @@
       var firstCard = track.firstElementChild;
       var step = (firstCard ? firstCard.getBoundingClientRect().width : 140) + 24;
       track.scrollBy({ left: dir * step * 3, behavior: 'smooth' });
+    }
+
+    // 시즌 상품 (3단 테마 판촉물 모음, Supabase에 등록된 실제 상품 데이터와 동일한 이름/가격 사용)
+    var seasonalColumns = [
+      {
+        bannerImg: 'images/products/office-pencilcase.jpg',
+        captionSmall: '사무실에서 유용한',
+        captionBig: '문구·오피스 소품',
+        items: [
+          { img: 'images/products/office-notebook.jpg', code: 'P-1001', name: '스프링 무지노트', price: '2,400원~' },
+          { img: 'images/products/office-pencilcase.jpg', code: 'P-1002', name: '패턴 지퍼 파우치', price: '6,400원~' },
+          { img: 'images/products/electronics-2.jpg', code: 'P-1003', name: 'USB 메모리 32GB', price: '10,400원~' }
+        ]
+      },
+      {
+        bannerImg: 'images/products/bag-1.jpg',
+        captionSmall: '야외에서도 든든한',
+        captionBig: '가방·우산 용품',
+        items: [
+          { img: 'images/products/umbrella-1.jpg', code: 'P-1004', name: '2단 자동 우산', price: '14,400원~' },
+          { img: 'images/products/umbrella-2.jpg', code: 'P-1005', name: '미니 3단 우산', price: '11,200원~' },
+          { img: 'images/products/bag-1.jpg', code: 'P-1006', name: '투톤 캔버스 토트백', price: '7,200원~' }
+        ]
+      },
+      {
+        bannerImg: 'images/products/season-1.jpg',
+        captionSmall: '실생활에 꼭 필요한',
+        captionBig: '생활·선물 세트',
+        items: [
+          { img: 'images/products/kitchen-1.jpg', code: 'P-1007', name: '원목 도마', price: '8,000원~' },
+          { img: 'images/products/health-1.jpg', code: 'P-1008', name: '휴대용 손소독제', price: '3,200원~' },
+          { img: 'images/products/season-1.jpg', code: 'P-1009', name: '리본 선물포장 세트', price: '4,800원~' }
+        ]
+      }
+    ];
+
+    function buildSeasonalItemHtml(item) {
+      return (
+        '<div class="flex items-center gap-3 py-2.5 border-b border-gray-100 last:border-0">' +
+          '<img src="' + item.img + '" class="w-14 h-14 rounded-lg object-cover bg-gray-100 shrink-0" alt="' + item.name + '">' +
+          '<div class="min-w-0 flex-1">' +
+            '<p class="text-[11px] text-gray-400">' + item.code + '</p>' +
+            '<p class="text-sm font-bold truncate">' + item.name + '</p>' +
+            '<p class="text-xs text-brand font-black mt-0.5">' + item.price + '</p>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function buildSeasonalColumnHtml(col) {
+      return (
+        '<div class="snap-start shrink-0 w-[85%] sm:w-[320px]">' +
+          '<div class="relative h-[150px] rounded-lg overflow-hidden bg-cover bg-center mb-3" style="background-image:url(\'' + col.bannerImg + '\')">' +
+            '<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>' +
+            '<div class="absolute bottom-0 left-0 right-0 text-center text-white pb-3">' +
+              '<p class="text-[11px]">' + col.captionSmall + '</p>' +
+              '<p class="text-base font-black">' + col.captionBig + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="bg-white rounded-lg px-3">' + col.items.map(buildSeasonalItemHtml).join('') + '</div>' +
+        '</div>'
+      );
+    }
+
+    document.getElementById('seasonal-track').innerHTML = seasonalColumns.map(buildSeasonalColumnHtml).join('');
+
+    function seasonalScroll(dir) {
+      var track = document.getElementById('seasonal-track');
+      var firstCard = track.firstElementChild;
+      var step = (firstCard ? firstCard.getBoundingClientRect().width : 320) + 20;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
     }
 
     var bannerTimer = null;
