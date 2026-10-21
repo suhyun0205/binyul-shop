@@ -69,22 +69,22 @@
   <header class="bg-white border-b border-gray-200">
     <div class="max-w-[1280px] mx-auto px-4 py-3 flex items-center gap-3">
       <div class="flex items-center gap-2 shrink-0">
-        <span class="text-2xl">🎁</span>
-        <h1 class="text-lg sm:text-xl font-black tracking-tight">소소<span class="text-brand">기프트</span></h1>
+        <span class="text-3xl">🏪</span>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight">소소<span class="text-brand">기프트</span></h1>
       </div>
 
-      <div class="flex-1 min-w-0 flex justify-center">
-        <div class="w-full max-w-[260px] sm:max-w-[320px] flex items-center bg-white border-2 border-gray-200 focus-within:border-brand rounded-full pl-4 sm:pl-5 pr-1.5 py-1.5 transition">
-          <label for="search-input" class="sr-only">상품 검색</label>
-          <input id="search-input" type="text" placeholder="판촉물, 기념품을 검색해보세요" class="flex-1 min-w-0 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
-          <button onclick="showToast('이미지 검색은 준비 중입니다.')" aria-label="이미지로 검색" class="hidden sm:flex shrink-0 w-8 h-8 items-center justify-center text-gray-400 hover:text-brand">
-            <i class="fa-regular fa-image"></i>
-          </button>
-          <button onclick="searchProducts()" aria-label="검색" class="shrink-0 w-9 h-9 flex items-center justify-center bg-brand text-white rounded-full hover:bg-blue-800 transition">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
+      <div class="min-w-0 flex items-center bg-white border-2 border-gray-200 focus-within:border-brand rounded-full pl-4 sm:pl-5 pr-1.5 py-1.5 ml-3 sm:ml-5 w-full max-w-[220px] sm:max-w-[300px] transition">
+        <label for="search-input" class="sr-only">상품 검색</label>
+        <input id="search-input" type="text" placeholder="판촉물, 기념품을 검색해보세요" class="flex-1 min-w-0 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
+        <button onclick="showToast('이미지 검색은 준비 중입니다.')" aria-label="이미지로 검색" class="hidden sm:flex shrink-0 w-8 h-8 items-center justify-center text-gray-400 hover:text-brand">
+          <i class="fa-regular fa-image"></i>
+        </button>
+        <button onclick="searchProducts()" aria-label="검색" class="shrink-0 w-9 h-9 flex items-center justify-center bg-brand text-white rounded-full hover:bg-blue-800 transition">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
       </div>
+
+      <div class="flex-1"></div>
 
       <div class="hidden md:block text-right shrink-0 mr-1">
         <p class="leading-none"><span class="text-xs text-gray-400 font-bold align-middle mr-1">대표번호</span><span class="text-xl font-black text-brand align-middle">1555-5555</span></p>
