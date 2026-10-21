@@ -368,9 +368,14 @@
 
   <!-- 카테고리 상품 (사이드바/아이콘에서 카테고리 선택 시 표시) -->
   <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
-    <h2 class="text-xl sm:text-2xl font-black mb-4">카테고리 상품</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-5 gap-y-9" id="product-grid">
-      <div class="cart-empty text-center text-gray-400 text-sm py-10 col-span-full">왼쪽 카테고리나 위 아이콘을 선택하면 상품을 보여드릴게요</div>
+    <div class="flex flex-col sm:flex-row gap-6 sm:gap-10">
+      <div class="sm:w-[180px] shrink-0">
+        <h2 class="text-xl sm:text-2xl font-black leading-tight">가성비 좋은<br>상품들</h2>
+        <p class="text-xs text-gray-400 mt-2">인기많고 홍보효과를<br>높여주는 아이템!</p>
+      </div>
+      <div class="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-5 gap-y-9" id="product-grid">
+        <div class="cart-empty text-center text-gray-400 text-sm py-10 col-span-full">상품을 불러오는 중...</div>
+      </div>
     </div>
   </section>
 
@@ -503,9 +508,9 @@
     function buildProductCardHtml(p, isBest) {
       var badgeHtml = '';
       if (p.badge === '신상제품') {
-        badgeHtml = '<span class="absolute top-2 left-2 bg-gray-900 text-white text-[11px] font-black px-2 py-1 rounded">NEW</span>';
+        badgeHtml = '<span class="absolute top-9 left-2 bg-gray-900 text-white text-[11px] font-black px-2 py-1 rounded">NEW</span>';
       } else if (isBest) {
-        badgeHtml = '<span class="absolute top-2 left-2 bg-sale text-white text-[11px] font-black px-2 py-1 rounded">BEST</span>';
+        badgeHtml = '<span class="absolute top-9 left-2 bg-sale text-white text-[11px] font-black px-2 py-1 rounded">BEST</span>';
       }
 
       var nameHtml = p.detail_url
@@ -518,6 +523,7 @@
         '<div class="card group relative" data-category="' + p.category + '" data-id="' + p.id + '" data-price="' + p.price + '" data-reviews="' + p.review_count + '" data-new="' + isNew + '" data-best="' + isBest + '">' +
           '<div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">' +
             '<img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="' + p.image_url + '" alt="' + p.name + '">' +
+            '<span class="absolute top-2 left-2 bg-gray-900/70 text-white text-[10px] font-bold px-2 py-1 rounded">상품코드 ' + (400000 + p.id) + '</span>' +
             badgeHtml +
             '<button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)" aria-label="찜하기"><i class="fa-solid fa-heart"></i></button>' +
           '</div>' +
@@ -567,8 +573,7 @@
       });
     }
 
-    // 카테고리/테마별 구성이 아직 확정 전이라 메인페이지에서는 상품을 자동으로 불러오지 않습니다.
-    // (실제 상품을 보여줄 준비가 되면 아래 주석을 해제하세요: loadProducts();)
+    loadProducts();
 
     // 짧게 보였다 사라지는 알림 표시
     function showToast(text) {
