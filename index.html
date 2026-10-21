@@ -296,13 +296,20 @@
   <!-- 안내 바 -->
   <div class="bg-gray-50 text-center text-xs text-gray-600 font-medium py-2.5">💬 대량주문·로고인쇄 견적은 고객센터로 문의해주세요</div>
 
-  <!-- 진행중인 이벤트 -->
-  <section class="max-w-[1280px] mx-auto px-4 pt-8">
-    <h2 class="text-xl sm:text-2xl font-black mb-4">진행중인 이벤트</h2>
-    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
-      <i class="fa-regular fa-calendar-days text-2xl mb-2 block"></i>
-      진행중인 이벤트가 없습니다. 곧 다양한 이벤트로 찾아올게요!
+  <!-- 인기 카테고리 -->
+  <section class="max-w-[1280px] mx-auto px-4 pt-8 relative">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl sm:text-2xl font-black">365일 언제나 많이 찾는 인기 카테고리 💖</h2>
+      <div class="hidden sm:flex gap-2">
+        <button onclick="popularCatScroll(-1)" aria-label="이전" class="w-8 h-8 rounded-full border border-gray-200 hover:bg-gray-50 flex items-center justify-center text-gray-500">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <button onclick="popularCatScroll(1)" aria-label="다음" class="w-8 h-8 rounded-full border border-gray-200 hover:bg-gray-50 flex items-center justify-center text-gray-500">
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
     </div>
+    <div id="popular-cat-track" class="flex gap-4 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-2"></div>
   </section>
 
   <!-- 테마기획전 -->
@@ -1114,6 +1121,42 @@
     }
 
     document.getElementById('banner-track').innerHTML = bannerSlidesData.map(buildBannerSlideHtml).join('');
+
+    // 인기 카테고리 (원형 이미지 랭킹 리스트)
+    var popularCatData = [
+      { img: 'images/products/office-notebook.jpg', category: 'office', name: '문구·오피스', keywords: '노트, 볼펜, 파일, 사무용품' },
+      { img: 'images/products/tumbler-1.png', category: 'tumbler', name: '텀블러·보온병', keywords: '텀블러, 보온병, 머그컵' },
+      { img: 'images/products/bag-1.jpg', category: 'bag', name: '가방·에코백', keywords: '에코백, 토트백, 파우치' },
+      { img: 'images/products/umbrella-1.jpg', category: 'umbrella', name: '우산', keywords: '3단우산, 2단우산, 우산세트' },
+      { img: 'images/products/apparel-2.jpg', category: 'apparel', name: '의류·단체복', keywords: '단체티, 카라티, 유니폼' },
+      { img: 'images/products/cap-1.png', category: 'cap', name: '모자', keywords: '볼캡, 버킷햇, 단체모자' },
+      { img: 'images/products/electronics-2.jpg', category: 'electronics', name: 'IT·전자', keywords: 'USB, 보조배터리, 충전케이블' },
+      { img: 'images/products/kitchen-1.jpg', category: 'kitchen', name: '생활·주방', keywords: '도마, 밀폐용기, 주방용품' },
+      { img: 'images/products/health-1.jpg', category: 'health', name: '건강·위생', keywords: '손소독제, 마스크, 위생용품' },
+      { img: 'images/products/season-1.jpg', category: 'season', name: '시즌·기획상품', keywords: '연말선물, 명절선물, 기획세트' }
+    ];
+
+    function buildPopularCatHtml(item, index) {
+      return (
+        '<button onclick="filterByCategory(\'' + item.category + '\')" class="snap-start shrink-0 w-[108px] sm:w-[140px] text-left">' +
+          '<p class="text-xl sm:text-2xl font-black text-gray-300 mb-1">' + (index + 1) + '</p>' +
+          '<div class="w-[108px] h-[108px] sm:w-[140px] sm:h-[140px] rounded-full overflow-hidden bg-gray-100">' +
+            '<img src="' + item.img + '" class="w-full h-full object-cover" alt="' + item.name + '">' +
+          '</div>' +
+          '<p class="text-sm font-black mt-2">' + item.name + '</p>' +
+          '<p class="text-[11px] text-gray-400 mt-1 leading-snug">' + item.keywords + '</p>' +
+        '</button>'
+      );
+    }
+
+    document.getElementById('popular-cat-track').innerHTML = popularCatData.map(buildPopularCatHtml).join('');
+
+    function popularCatScroll(dir) {
+      var track = document.getElementById('popular-cat-track');
+      var firstCard = track.firstElementChild;
+      var step = (firstCard ? firstCard.getBoundingClientRect().width : 140) + 24;
+      track.scrollBy({ left: dir * step * 3, behavior: 'smooth' });
+    }
 
     var bannerTimer = null;
 
