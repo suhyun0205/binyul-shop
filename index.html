@@ -101,9 +101,17 @@
         <button onclick="filterByTab('all', document.getElementById('tab-all-mobile'))" class="flex items-center gap-2 bg-brand text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shrink-0 hover:bg-blue-800 transition">
           <i class="fa-solid fa-bars"></i> <span class="hidden sm:inline">전체카테고리</span>
         </button>
-        <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">베스트</a>
+        <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">베스트100</a>
         <a href="#" onclick="showToast('준비 중인 기획전입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">기획전</a>
         <a href="#" onclick="showToast('준비 중인 이벤트입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">증정이벤트</a>
+        <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden lg:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">당일발송</a>
+        <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden lg:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">전문관</a>
+        <a href="#" onclick="showToast('준비 중인 기능입니다.'); return false;" class="hidden lg:flex items-center gap-1.5 pl-5 ml-1 border-l border-gray-200 text-sm whitespace-nowrap">
+          <i class="fa-solid fa-magnifying-glass text-sale"></i>
+          <span class="font-black text-sale">맞춤검색</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-gray-400 font-bold">업종·행사·가격별</span>
+        </a>
 
         <div class="flex-1 min-w-0 overflow-x-auto no-scrollbar sm:hidden">
           <div class="flex gap-4" id="mobile-cat-tabs">
