@@ -332,19 +332,71 @@
   <!-- 안내 바 -->
   <div class="bg-gray-50 text-center text-xs text-gray-600 font-medium py-2.5">💬 대량주문·로고인쇄 견적은 고객센터로 문의해주세요</div>
 
-  <!-- 상품 섹션 제목 + 정렬 -->
-  <div class="max-w-[1280px] mx-auto px-4 pt-8 flex items-center justify-between flex-wrap gap-3">
-    <h2 class="text-xl sm:text-2xl font-black">카테고리별 판촉물</h2>
-    <div class="flex gap-1.5">
-      <button class="sort-btn active px-3 py-1.5 rounded-full border border-gray-300 text-xs font-bold" data-sort="new" onclick="sortProducts('new')">신상품순</button>
-      <button class="sort-btn px-3 py-1.5 rounded-full border border-gray-300 text-xs font-bold" data-sort="popular" onclick="sortProducts('popular')">인기순</button>
-      <button class="sort-btn px-3 py-1.5 rounded-full border border-gray-300 text-xs font-bold" data-sort="price" onclick="sortProducts('price')">가격순</button>
+  <!-- 진행중인 이벤트 -->
+  <section class="max-w-[1280px] mx-auto px-4 pt-8">
+    <h2 class="text-xl sm:text-2xl font-black mb-4">진행중인 이벤트</h2>
+    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
+      <i class="fa-regular fa-calendar-days text-2xl mb-2 block"></i>
+      진행중인 이벤트가 없습니다. 곧 다양한 이벤트로 찾아올게요!
     </div>
-  </div>
+  </section>
 
-  <!-- 상품 카드 8개 -->
-  <section class="products grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-5 gap-y-9 max-w-[1280px] mx-auto px-4 py-6" id="product-grid">
-    <div class="cart-empty text-center text-gray-400 text-sm py-10 col-span-full">상품을 불러오는 중...</div>
+  <!-- 테마기획전 -->
+  <section class="max-w-[1280px] mx-auto px-4 py-8">
+    <h2 class="text-xl sm:text-2xl font-black mb-4">테마기획전</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <button onclick="showToast('준비 중인 기획전입니다.')" class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 text-left hover:shadow-md transition">
+        <p class="text-sm font-black text-gray-800 mb-1">단체 기념품</p>
+        <p class="text-[11px] text-gray-400">상품 준비 중</p>
+      </button>
+      <button onclick="showToast('준비 중인 기획전입니다.')" class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-5 text-left hover:shadow-md transition">
+        <p class="text-sm font-black text-gray-800 mb-1">개업·창립 선물</p>
+        <p class="text-[11px] text-gray-400">상품 준비 중</p>
+      </button>
+      <button onclick="showToast('준비 중인 기획전입니다.')" class="bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl p-5 text-left hover:shadow-md transition">
+        <p class="text-sm font-black text-gray-800 mb-1">생일·축하 선물</p>
+        <p class="text-[11px] text-gray-400">상품 준비 중</p>
+      </button>
+      <button onclick="showToast('준비 중인 기획전입니다.')" class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-5 text-left hover:shadow-md transition">
+        <p class="text-sm font-black text-gray-800 mb-1">연말·시즌 행사</p>
+        <p class="text-[11px] text-gray-400">상품 준비 중</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- 시즌 상품 -->
+  <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
+    <h2 class="text-xl sm:text-2xl font-black mb-4">시즌 상품</h2>
+    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
+      <i class="fa-regular fa-snowflake text-2xl mb-2 block"></i>
+      이번 시즌 추천 상품을 준비하고 있어요
+    </div>
+  </section>
+
+  <!-- 인기 상품 -->
+  <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
+    <h2 class="text-xl sm:text-2xl font-black mb-4">인기 상품</h2>
+    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
+      <i class="fa-regular fa-heart text-2xl mb-2 block"></i>
+      아직 인기 상품 데이터가 모이지 않았어요
+    </div>
+  </section>
+
+  <!-- 카테고리 상품 (사이드바/아이콘에서 카테고리 선택 시 표시) -->
+  <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
+    <h2 class="text-xl sm:text-2xl font-black mb-4">카테고리 상품</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-5 gap-y-9" id="product-grid">
+      <div class="cart-empty text-center text-gray-400 text-sm py-10 col-span-full">왼쪽 카테고리나 위 아이콘을 선택하면 상품을 보여드릴게요</div>
+    </div>
+  </section>
+
+  <!-- 베스트 상품 -->
+  <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
+    <h2 class="text-xl sm:text-2xl font-black mb-4">베스트 상품</h2>
+    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
+      <i class="fa-solid fa-ranking-star text-2xl mb-2 block"></i>
+      아직 집계된 베스트 상품이 없습니다
+    </div>
   </section>
 
   <!-- 쇼핑몰 소개 -->
@@ -484,7 +536,8 @@
       });
     }
 
-    loadProducts();
+    // 카테고리/테마별 구성이 아직 확정 전이라 메인페이지에서는 상품을 자동으로 불러오지 않습니다.
+    // (실제 상품을 보여줄 준비가 되면 아래 주석을 해제하세요: loadProducts();)
 
     // 짧게 보였다 사라지는 알림 표시
     function showToast(text) {
@@ -969,12 +1022,15 @@
         }
       });
 
-      var emptyMsg = document.getElementById('category-empty-msg');
-      if (emptyMsg) {
-        emptyMsg.remove();
-      }
+      var grid = document.getElementById('product-grid');
+      // 카드가 아닌 기존 안내 문구(기본 placeholder, 이전 빈 상태 메시지)는 모두 제거
+      Array.prototype.slice.call(grid.children).forEach(function (child) {
+        if (!child.classList.contains('card')) {
+          child.remove();
+        }
+      });
+
       if (visibleCount === 0) {
-        var grid = document.getElementById('product-grid');
         var msg = document.createElement('div');
         msg.id = 'category-empty-msg';
         msg.className = 'cart-empty text-center text-gray-400 text-sm py-10 col-span-full';
