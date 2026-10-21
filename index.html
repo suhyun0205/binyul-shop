@@ -228,51 +228,11 @@
   <main>
   <!-- 메인 롤링 배너 (여러 카드가 동시에 보이는 가로 스크롤형) -->
   <div class="max-w-[1280px] mx-auto px-4 py-4 relative">
-    <div id="banner-track" class="flex gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
-      <div class="snap-start shrink-0 w-[82%] sm:w-[58%] lg:w-[47%] relative bg-teal-700 overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px]">
-        <div class="relative h-full flex items-center px-5 sm:px-10">
-          <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
-            <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">텀블러·보온병</span>
-            <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">기업·단체 행사 선물<br>소소기프트에서 한 번에</h2>
-            <p class="hidden sm:block text-[11px] text-white/70 mb-2">#행사용품 #단체구매</p>
-            <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-brand hover:text-white transition">견적 문의하기</button>
-          </div>
-          <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
-            <img src="images/products/tumbler-1.png" class="max-w-full max-h-full object-contain" alt="텀블러">
-          </div>
-        </div>
-      </div>
-      <div class="snap-start shrink-0 w-[82%] sm:w-[58%] lg:w-[47%] relative bg-indigo-800 overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px]">
-        <div class="relative h-full flex items-center px-5 sm:px-10">
-          <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
-            <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">가방·에코백</span>
-            <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">로고 인쇄·각인<br>무료 샘플 상담 가능</h2>
-            <p class="hidden sm:block text-[11px] text-white/70 mb-2">#로고인쇄 #에코백</p>
-            <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-brand hover:text-white transition">상담 신청</button>
-          </div>
-          <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
-            <img src="images/products/bag-1.jpg" class="max-w-full max-h-full object-contain" alt="에코백">
-          </div>
-        </div>
-      </div>
-      <div class="snap-start shrink-0 w-[82%] sm:w-[58%] lg:w-[47%] relative bg-amber-800 overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px]">
-        <div class="relative h-full flex items-center px-5 sm:px-10">
-          <div class="z-10 max-w-[58%] sm:max-w-[55%] text-white">
-            <span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">모자</span>
-            <h2 class="text-sm sm:text-xl font-black leading-tight mb-1.5">대량주문 할인<br>소량주문도 가능해요</h2>
-            <p class="hidden sm:block text-[11px] text-white/70 mb-2">#대량주문 #소량가능</p>
-            <button onclick="filterByCategory('all')" class="bg-white text-gray-900 font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs hover:bg-sale hover:text-white transition">카테고리 보기</button>
-          </div>
-          <div class="absolute right-2 sm:right-8 bottom-[-18px] sm:bottom-[-24px] w-[110px] h-[110px] sm:w-[170px] sm:h-[170px] bg-white rounded-full shadow-xl flex items-center justify-center p-3">
-            <img src="images/products/cap-1.png" class="max-w-full max-h-full object-contain" alt="모자">
-          </div>
-        </div>
-      </div>
-    </div>
-    <button onclick="prevSlide()" aria-label="이전 배너" class="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md hover:bg-gray-50 text-gray-700 items-center justify-center">
+    <div id="banner-track" class="flex gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory"></div>
+    <button onclick="prevSlide()" aria-label="이전 배너" class="hidden sm:flex absolute left-6 top-9 w-9 h-9 rounded-full bg-white shadow-md hover:bg-gray-50 text-gray-700 items-center justify-center">
       <i class="fa-solid fa-chevron-left"></i>
     </button>
-    <button onclick="nextSlide()" aria-label="다음 배너" class="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-md hover:bg-gray-50 text-gray-700 items-center justify-center">
+    <button onclick="nextSlide()" aria-label="다음 배너" class="hidden sm:flex absolute right-6 top-9 w-9 h-9 rounded-full bg-white shadow-md hover:bg-gray-50 text-gray-700 items-center justify-center">
       <i class="fa-solid fa-chevron-right"></i>
     </button>
   </div>
@@ -1125,8 +1085,36 @@
       });
     }
 
-    // 메인 배너 스와이프
-    // 배너: 여러 카드가 동시에 보이는 가로 스크롤 (스크롤 위치 기반으로 이전/다음 버튼 동작)
+    // 메인 배너: 여러 카드가 동시에 보이는 가로 스크롤 (사진 위 텍스트 오버레이, 화살표/자동 스크롤로 이동)
+    var bannerSlidesData = [
+      { img: 'images/products/tumbler-1.png', category: 'tumbler', tag: '텀블러·보온병', heading: '기업·단체 행사 선물<br>소소기프트에서 한 번에', hashtags: '#행사용품 #단체구매' },
+      { img: 'images/products/bag-1.jpg', category: 'bag', tag: '가방·에코백', heading: '로고 인쇄·각인<br>무료 샘플 상담 가능', hashtags: '#로고인쇄 #에코백' },
+      { img: 'images/products/cap-1.png', category: 'cap', tag: '모자', heading: '대량주문 할인<br>소량주문도 가능해요', hashtags: '#대량주문 #소량가능' },
+      { img: 'images/products/office-notebook.jpg', category: 'office', tag: '문구·오피스', heading: '사무실 필수템<br>실용적인 문구류', hashtags: '#사무용품 #문구' },
+      { img: 'images/products/umbrella-1.jpg', category: 'umbrella', tag: '우산', heading: '비 오는 날 필수템<br>튼튼한 우산 선물', hashtags: '#우산 #행사용품' },
+      { img: 'images/products/umbrella-2.jpg', category: 'umbrella', tag: '우산', heading: '화사한 컬러 우산<br>포인트 되는 선물', hashtags: '#컬러우산 #포인트선물' },
+      { img: 'images/products/electronics-2.jpg', category: 'electronics', tag: 'IT·전자', heading: '사무용 USB<br>로고 각인 가능', hashtags: '#USB #로고각인' },
+      { img: 'images/products/kitchen-1.jpg', category: 'kitchen', tag: '생활·주방', heading: '원목 주방용품<br>실생활에 딱 맞는 선물', hashtags: '#주방용품 #실용선물' },
+      { img: 'images/products/health-1.jpg', category: 'health', tag: '건강·위생', heading: '방심은 금물!<br>청결 지킴이 세트', hashtags: '#위생용품 #단체선물' },
+      { img: 'images/products/season-1.jpg', category: 'season', tag: '시즌·기획상품', heading: '연말·시즌 선물<br>리본 포장 서비스', hashtags: '#시즌선물 #포장서비스' }
+    ];
+
+    function buildBannerSlideHtml(slide) {
+      return (
+        '<div class="snap-start shrink-0 w-[82%] sm:w-[46%] lg:w-[31%] relative overflow-hidden rounded-lg h-[175px] sm:h-[215px] lg:h-[267px] bg-cover bg-center" style="background-image:url(\'' + slide.img + '\')">' +
+          '<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/5"></div>' +
+          '<div class="relative h-full flex flex-col items-start justify-end text-white px-4 sm:px-6 pb-4 sm:pb-6">' +
+            '<span class="bg-white/15 backdrop-blur text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full mb-2 inline-block">' + slide.tag + '</span>' +
+            '<h2 class="text-sm sm:text-base font-black leading-tight mb-2">' + slide.heading + '</h2>' +
+            '<p class="hidden sm:block text-[11px] text-white/70 mb-2">' + slide.hashtags + '</p>' +
+            '<button onclick="filterByCategory(\'' + slide.category + '\')" class="bg-white text-gray-900 font-black px-3.5 py-1.5 rounded-full text-[11px] hover:bg-brand hover:text-white transition">자세히 보기</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    document.getElementById('banner-track').innerHTML = bannerSlidesData.map(buildBannerSlideHtml).join('');
+
     var bannerTimer = null;
 
     function bannerCardStep() {
