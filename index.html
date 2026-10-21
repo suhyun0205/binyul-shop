@@ -96,7 +96,7 @@
     <!-- 2단: 전체카테고리 버튼 + 빠른 메뉴 + 계정/장바구니 -->
     <div class="border-t border-gray-100">
       <div class="max-w-[1280px] mx-auto px-4 py-2.5 flex items-center gap-5">
-        <button onclick="filterByTab('all', document.getElementById('tab-all-sidebar') || document.getElementById('tab-all-mobile'))" class="flex items-center gap-2 bg-brand text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shrink-0 hover:bg-blue-800 transition">
+        <button onclick="filterByTab('all', document.getElementById('tab-all-mobile'))" class="flex items-center gap-2 bg-brand text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shrink-0 hover:bg-blue-800 transition">
           <i class="fa-solid fa-bars"></i> <span class="hidden sm:inline">전체카테고리</span>
         </button>
         <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">베스트</a>
@@ -217,26 +217,9 @@
   </div>
 
   <main>
-  <!-- 카테고리 사이드바 + 메인 롤링 배너 -->
-  <div class="max-w-[1280px] mx-auto px-4 py-4 flex gap-4 items-start">
-
-    <!-- 카테고리 사이드바 (데스크톱 전용) -->
-    <aside class="hidden lg:flex flex-col w-[220px] shrink-0 bg-navy rounded-lg overflow-hidden py-1">
-      <a href="#" id="tab-all-sidebar" data-category="all" class="cat-tab sidebar-cat-tab active text-sm font-bold px-5 py-3" onclick="filterByTab('all', this); return false;">전체보기</a>
-      <a href="#" data-category="office" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('office', this); return false;">문구·오피스</a>
-      <a href="#" data-category="tumbler" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('tumbler', this); return false;">텀블러·보온병</a>
-      <a href="#" data-category="bag" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('bag', this); return false;">가방·에코백</a>
-      <a href="#" data-category="umbrella" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('umbrella', this); return false;">우산</a>
-      <a href="#" data-category="apparel" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('apparel', this); return false;">의류·단체복</a>
-      <a href="#" data-category="cap" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('cap', this); return false;">모자</a>
-      <a href="#" data-category="electronics" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('electronics', this); return false;">IT·전자</a>
-      <a href="#" data-category="kitchen" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('kitchen', this); return false;">생활·주방</a>
-      <a href="#" data-category="health" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('health', this); return false;">건강·위생</a>
-      <a href="#" id="tab-season" data-category="season" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('season', this); return false;">시즌·기획상품</a>
-    </aside>
-
-    <!-- 메인 롤링 배너 -->
-    <section class="relative flex-1 min-w-0 bg-gray-900 overflow-hidden rounded-lg">
+  <!-- 메인 롤링 배너 -->
+  <div class="max-w-[1280px] mx-auto px-4 py-4">
+    <section class="relative bg-gray-900 overflow-hidden rounded-lg">
       <div id="banner-track" class="banner-track flex h-[175px] sm:h-[215px] lg:h-[267px]">
         <div class="w-full flex-shrink-0 relative bg-teal-700 overflow-hidden">
           <div class="relative h-full flex items-center px-5 sm:px-10">
