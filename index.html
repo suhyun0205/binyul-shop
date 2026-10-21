@@ -43,9 +43,26 @@
   <!-- 짧게 보였다 사라지는 알림 -->
   <div class="toast fixed bottom-8 left-1/2 bg-gray-900 text-white text-sm font-bold px-5 py-3 rounded-full z-[2000] shadow-xl" id="toast"></div>
 
-  <!-- 최상단 안내 바 -->
-  <div class="bg-navy text-gray-300 text-center text-[11px] sm:text-xs font-medium py-2 px-4">
-    🎁 기업·단체 대량주문 할인 상담 &nbsp;·&nbsp; 로고 인쇄 무료 상담
+  <!-- 최상단 유틸리티 바 -->
+  <div class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500">
+    <div class="max-w-[1280px] mx-auto px-4 py-2 flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
+      <div class="flex items-center gap-3 whitespace-nowrap shrink-0">
+        <a href="#" onclick="showToast('입점 신청은 준비 중입니다.'); return false;" class="font-bold text-sale">입점신청</a>
+        <a href="#" onclick="showToast('준비 중인 페이지입니다.'); return false;" class="hover:text-brand">회사소개</a>
+      </div>
+      <div class="flex items-center gap-3 whitespace-nowrap shrink-0">
+        <a href="login.html" class="hover:text-brand">로그인</a>
+        <a href="signup.html" class="hover:text-brand">회원가입</a>
+        <a href="#" onclick="toggleMypage(); return false;" class="hover:text-brand">마이페이지</a>
+        <a href="#footer-cs" class="hover:text-brand">고객센터</a>
+        <a href="#" onclick="showToast('준비 중인 페이지입니다.'); return false;" class="hover:text-brand"><i class="fa-regular fa-circle-question"></i> 자주하는 질문</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 안내 문구 -->
+  <div class="bg-white text-center text-xs sm:text-sm py-3 px-4 text-gray-700">
+    소소기프트는 <a href="#" onclick="showToast('준비 중인 페이지입니다.'); return false;" class="text-brand font-bold hover:underline">기업·단체 판촉물 전문몰</a> 입니다
   </div>
 
   <!-- 상단 헤더 -->
@@ -59,6 +76,9 @@
       <div class="flex-1 min-w-0 flex items-center bg-white border-2 border-gray-200 focus-within:border-brand rounded-full pl-4 sm:pl-5 pr-1.5 py-1.5 mx-2 sm:mx-6 transition">
         <label for="search-input" class="sr-only">상품 검색</label>
         <input id="search-input" type="text" placeholder="판촉물, 기념품을 검색해보세요" class="flex-1 min-w-0 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
+        <button onclick="showToast('이미지 검색은 준비 중입니다.')" aria-label="이미지로 검색" class="hidden sm:flex shrink-0 w-8 h-8 items-center justify-center text-gray-400 hover:text-brand">
+          <i class="fa-regular fa-image"></i>
+        </button>
         <button onclick="searchProducts()" aria-label="검색" class="shrink-0 w-9 h-9 flex items-center justify-center bg-brand text-white rounded-full hover:bg-blue-800 transition">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
@@ -344,7 +364,7 @@
     <div class="max-w-[1280px] mx-auto px-4 py-10">
 
       <!-- 고객센터 -->
-      <div class="grid sm:grid-cols-3 gap-6 pb-8 border-b border-gray-100">
+      <div id="footer-cs" class="grid sm:grid-cols-3 gap-6 pb-8 border-b border-gray-100">
         <div class="flex items-start gap-3">
           <i class="fa-solid fa-headset text-brand text-xl mt-0.5"></i>
           <div>
