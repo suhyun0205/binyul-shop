@@ -362,7 +362,7 @@
     <h2 class="text-xl sm:text-2xl font-black mb-5">자주찾는 카테고리 모아모아 🌸</h2>
     <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
       <div id="popular-pill-list" class="flex sm:flex-col gap-2 overflow-x-auto no-scrollbar sm:overflow-visible sm:w-[220px] shrink-0"></div>
-      <div id="popular-grid" class="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
+      <div id="popular-grid" class="flex-1 min-w-0 flex flex-wrap gap-5 sm:gap-6"></div>
     </div>
   </section>
 
@@ -1272,11 +1272,11 @@
 
     function buildPopularGridHtml(item) {
       return (
-        '<button onclick="filterByCategory(\'' + item.category + '\')" class="text-center group">' +
-          '<div class="aspect-square rounded-lg overflow-hidden bg-gray-100">' +
+        '<button onclick="filterByCategory(\'' + item.category + '\')" class="text-center group flex flex-col items-center">' +
+          '<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100">' +
             '<img src="' + item.img + '" class="w-full h-full object-cover group-hover:scale-105 transition" alt="' + item.name + '">' +
           '</div>' +
-          '<p class="text-sm font-bold mt-2">' + item.name + '</p>' +
+          '<p class="text-xs sm:text-sm font-bold mt-2">' + item.name + '</p>' +
         '</button>'
       );
     }
