@@ -359,10 +359,10 @@
 
   <!-- 인기 상품 -->
   <section class="max-w-[1280px] mx-auto px-4 py-8 border-t border-gray-100">
-    <h2 class="text-xl sm:text-2xl font-black mb-4">인기 상품</h2>
-    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center py-10 text-gray-400 text-sm">
-      <i class="fa-regular fa-heart text-2xl mb-2 block"></i>
-      아직 인기 상품 데이터가 모이지 않았어요
+    <h2 class="text-xl sm:text-2xl font-black mb-5">자주찾는 카테고리 모아모아 🌸</h2>
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+      <div id="popular-pill-list" class="flex sm:flex-col gap-2 overflow-x-auto no-scrollbar sm:overflow-visible sm:w-[220px] shrink-0"></div>
+      <div id="popular-grid" class="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
     </div>
   </section>
 
@@ -1241,6 +1241,48 @@
       var step = (firstCard ? firstCard.getBoundingClientRect().width : 320) + 20;
       track.scrollBy({ left: dir * step, behavior: 'smooth' });
     }
+
+    // 인기 상품: 왼쪽 카테고리 알약탭 + 오른쪽 상품 그리드
+    var popularPillData = [
+      { category: 'office', icon: '✏️', name: '볼펜·사무문구' },
+      { category: 'tumbler', icon: '🥤', name: '텀블러·주방·식품' },
+      { category: 'bag', icon: '👜', name: '가방·의류' },
+      { category: 'electronics', icon: '🔌', name: 'USB·디지털·가전' },
+      { category: 'kitchen', icon: '🍳', name: '가정·생활용품' },
+      { category: 'health', icon: '🧴', name: '건강·레저·차량' }
+    ];
+
+    var popularGridData = [
+      { img: 'images/products/tumbler-1.png', category: 'tumbler', name: '텀블러' },
+      { img: 'images/products/bag-2.jpg', category: 'bag', name: '가방' },
+      { img: 'images/products/cap-1.png', category: 'cap', name: '모자' },
+      { img: 'images/products/electronics-2.jpg', category: 'electronics', name: 'USB' },
+      { img: 'images/products/kitchen-1.jpg', category: 'kitchen', name: '주방용품' },
+      { img: 'images/products/health-1.jpg', category: 'health', name: '위생용품' }
+    ];
+
+    function buildPopularPillHtml(pill, index) {
+      var activeClass = index === 0 ? 'border-sale text-sale bg-rose-50' : 'border-gray-200 text-gray-600 hover:border-gray-300';
+      return (
+        '<button onclick="filterByCategory(\'' + pill.category + '\')" class="flex items-center gap-2 border-2 ' + activeClass + ' rounded-full px-4 py-2.5 text-sm font-bold whitespace-nowrap transition shrink-0">' +
+          '<span>' + pill.icon + '</span>' + pill.name +
+        '</button>'
+      );
+    }
+
+    function buildPopularGridHtml(item) {
+      return (
+        '<button onclick="filterByCategory(\'' + item.category + '\')" class="text-center group">' +
+          '<div class="aspect-square rounded-lg overflow-hidden bg-gray-100">' +
+            '<img src="' + item.img + '" class="w-full h-full object-cover group-hover:scale-105 transition" alt="' + item.name + '">' +
+          '</div>' +
+          '<p class="text-sm font-bold mt-2">' + item.name + '</p>' +
+        '</button>'
+      );
+    }
+
+    document.getElementById('popular-pill-list').innerHTML = popularPillData.map(buildPopularPillHtml).join('');
+    document.getElementById('popular-grid').innerHTML = popularGridData.map(buildPopularGridHtml).join('');
 
     var bannerTimer = null;
 
