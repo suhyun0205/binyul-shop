@@ -28,8 +28,10 @@
   .toast { opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translate(-50%, 10px); }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
   .wish-btn.active { color: #C92A2A; }
-  .cat-tab { color: #CBD5E1; }
-  .cat-tab.active { color: #ffffff; border-bottom-color: #60A5FA; }
+  .sidebar-cat-tab { color: #CBD5E1; }
+  .sidebar-cat-tab.active { color: #ffffff; background: rgba(255,255,255,.08); }
+  .mobile-cat-tab { color: #6B7280; padding-bottom: 8px; border-bottom: 2px solid transparent; }
+  .mobile-cat-tab.active { color: #1D4ED8; border-bottom-color: #1D4ED8; }
   .sort-btn.active { background: #111111; color: #ffffff; border-color: #111111; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -67,35 +69,49 @@
         <p class="text-base font-black text-brand">010-3371-2212</p>
       </div>
 
-      <div class="flex items-center gap-1 sm:gap-3 shrink-0 md:pl-4 md:border-l md:border-gray-200">
-        <button id="auth-widget" onclick="location.href='login.html'" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
-          <i class="fa-regular fa-user text-lg"></i>
-          <span id="auth-widget-text" class="inline-block align-middle text-xs font-bold max-w-[90px] sm:max-w-[160px] truncate">로그인</span>
-        </button>
-        <button id="logout-btn" onclick="handleSignOut()" class="hidden text-xs font-bold text-gray-400 hover:text-sale">로그아웃</button>
-        <button onclick="toggleCart()" aria-label="장바구니" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
-          <i class="fa-solid fa-cart-shopping text-lg"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-sale text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
-        </button>
-      </div>
     </div>
 
-    <!-- 카테고리 탭 (스크롤 시 상단 고정) -->
-    <nav class="sticky top-0 z-40 bg-navy">
-      <div class="max-w-[1280px] mx-auto px-4 flex gap-5 overflow-x-auto no-scrollbar">
-        <a href="#" id="tab-all" data-category="all" class="cat-tab active text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('all', this); return false;">전체</a>
-        <a href="#" data-category="office" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('office', this); return false;">문구·오피스</a>
-        <a href="#" data-category="tumbler" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('tumbler', this); return false;">텀블러·보온병</a>
-        <a href="#" data-category="bag" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('bag', this); return false;">가방·에코백</a>
-        <a href="#" data-category="umbrella" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('umbrella', this); return false;">우산</a>
-        <a href="#" data-category="apparel" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('apparel', this); return false;">의류·단체복</a>
-        <a href="#" data-category="cap" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('cap', this); return false;">모자</a>
-        <a href="#" data-category="electronics" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('electronics', this); return false;">IT·전자</a>
-        <a href="#" data-category="kitchen" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('kitchen', this); return false;">생활·주방</a>
-        <a href="#" data-category="health" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('health', this); return false;">건강·위생</a>
-        <a href="#" id="tab-season" data-category="season" class="cat-tab text-sm font-bold py-3 border-b-2 border-transparent whitespace-nowrap" onclick="filterByTab('season', this); return false;">시즌·기획상품</a>
+    <!-- 2단: 전체카테고리 버튼 + 빠른 메뉴 + 계정/장바구니 -->
+    <div class="border-t border-gray-100">
+      <div class="max-w-[1280px] mx-auto px-4 py-2.5 flex items-center gap-5">
+        <button onclick="filterByTab('all', document.getElementById('tab-all-sidebar') || document.getElementById('tab-all-mobile'))" class="flex items-center gap-2 bg-brand text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shrink-0 hover:bg-blue-800 transition">
+          <i class="fa-solid fa-bars"></i> <span class="hidden sm:inline">전체카테고리</span>
+        </button>
+        <a href="#" onclick="showToast('준비 중인 메뉴입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">베스트</a>
+        <a href="#" onclick="showToast('준비 중인 기획전입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">기획전</a>
+        <a href="#" onclick="showToast('준비 중인 이벤트입니다.'); return false;" class="hidden sm:block text-sm font-bold text-gray-700 hover:text-brand whitespace-nowrap">증정이벤트</a>
+
+        <div class="flex-1 min-w-0 overflow-x-auto no-scrollbar sm:hidden">
+          <div class="flex gap-4" id="mobile-cat-tabs">
+            <a href="#" id="tab-all-mobile" data-category="all" class="cat-tab mobile-cat-tab active text-xs font-bold whitespace-nowrap" onclick="filterByTab('all', this); return false;">전체</a>
+            <a href="#" data-category="office" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('office', this); return false;">문구·오피스</a>
+            <a href="#" data-category="tumbler" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('tumbler', this); return false;">텀블러</a>
+            <a href="#" data-category="bag" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('bag', this); return false;">가방</a>
+            <a href="#" data-category="umbrella" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('umbrella', this); return false;">우산</a>
+            <a href="#" data-category="apparel" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('apparel', this); return false;">의류</a>
+            <a href="#" data-category="cap" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('cap', this); return false;">모자</a>
+            <a href="#" data-category="electronics" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('electronics', this); return false;">IT·전자</a>
+            <a href="#" data-category="kitchen" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('kitchen', this); return false;">생활·주방</a>
+            <a href="#" data-category="health" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('health', this); return false;">건강·위생</a>
+            <a href="#" id="tab-season-mobile" data-category="season" class="cat-tab mobile-cat-tab text-xs font-bold whitespace-nowrap" onclick="filterByTab('season', this); return false;">기획상품</a>
+          </div>
+        </div>
+
+        <div class="hidden sm:flex flex-1"></div>
+
+        <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+          <button id="auth-widget" onclick="location.href='login.html'" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
+            <i class="fa-regular fa-user text-lg"></i>
+            <span id="auth-widget-text" class="inline-block align-middle text-xs font-bold max-w-[90px] sm:max-w-[160px] truncate">로그인</span>
+          </button>
+          <button id="logout-btn" onclick="handleSignOut()" class="hidden text-xs font-bold text-gray-400 hover:text-sale">로그아웃</button>
+          <button onclick="toggleCart()" aria-label="장바구니" class="relative text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
+            <i class="fa-solid fa-cart-shopping text-lg"></i>
+            <span id="cart-count" class="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-sale text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+          </button>
+        </div>
       </div>
-    </nav>
+    </div>
   </header>
 
   <!-- 장바구니 모달 -->
@@ -179,33 +195,61 @@
   </div>
 
   <main>
-  <!-- 메인 롤링 배너 -->
-  <section class="relative bg-gray-900 overflow-hidden">
-    <div id="banner-track" class="banner-track flex">
-      <div class="w-full flex-shrink-0 bg-gradient-to-br from-navy via-blue-900 to-gray-900 text-white flex flex-col items-center justify-center text-center py-8 sm:py-10 px-6">
-        <p class="text-xs font-black tracking-[0.2em] text-blue-300 mb-2">SOSO GIFT</p>
-        <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">기업·단체 행사 선물<br>소소기프트에서 한 번에</h2>
-        <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-brand hover:text-white transition">견적 문의하기</button>
+  <!-- 카테고리 사이드바 + 메인 롤링 배너 -->
+  <div class="max-w-[1280px] mx-auto px-4 py-4 flex gap-4 items-stretch">
+
+    <!-- 카테고리 사이드바 (데스크톱 전용) -->
+    <aside class="hidden lg:flex flex-col w-[220px] shrink-0 bg-navy rounded-lg overflow-hidden py-1">
+      <a href="#" id="tab-all-sidebar" data-category="all" class="cat-tab sidebar-cat-tab active text-sm font-bold px-5 py-3" onclick="filterByTab('all', this); return false;">전체보기</a>
+      <a href="#" data-category="office" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('office', this); return false;">문구·오피스</a>
+      <a href="#" data-category="tumbler" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('tumbler', this); return false;">텀블러·보온병</a>
+      <a href="#" data-category="bag" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('bag', this); return false;">가방·에코백</a>
+      <a href="#" data-category="umbrella" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('umbrella', this); return false;">우산</a>
+      <a href="#" data-category="apparel" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('apparel', this); return false;">의류·단체복</a>
+      <a href="#" data-category="cap" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('cap', this); return false;">모자</a>
+      <a href="#" data-category="electronics" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('electronics', this); return false;">IT·전자</a>
+      <a href="#" data-category="kitchen" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('kitchen', this); return false;">생활·주방</a>
+      <a href="#" data-category="health" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('health', this); return false;">건강·위생</a>
+      <a href="#" id="tab-season" data-category="season" class="cat-tab sidebar-cat-tab text-sm font-bold px-5 py-3" onclick="filterByTab('season', this); return false;">시즌·기획상품</a>
+    </aside>
+
+    <!-- 메인 롤링 배너 -->
+    <section class="relative flex-1 min-w-0 bg-gray-900 overflow-hidden rounded-lg">
+      <div id="banner-track" class="banner-track flex h-[260px] sm:h-[320px] lg:h-[400px]">
+        <div class="w-full flex-shrink-0 relative bg-cover bg-center" style="background-image:url('https://picsum.photos/seed/sosogift-tumbler/900/600')">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10"></div>
+          <div class="relative h-full flex flex-col items-start justify-end text-white px-6 sm:px-10 pb-8 sm:pb-10">
+            <span class="bg-white/15 backdrop-blur text-xs font-bold px-3 py-1 rounded-full mb-3">텀블러·보온병</span>
+            <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">기업·단체 행사 선물<br>소소기프트에서 한 번에</h2>
+            <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-brand hover:text-white transition">견적 문의하기</button>
+          </div>
+        </div>
+        <div class="w-full flex-shrink-0 relative bg-cover bg-center" style="background-image:url('https://picsum.photos/seed/sosogift-bag/900/600')">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10"></div>
+          <div class="relative h-full flex flex-col items-start justify-end text-white px-6 sm:px-10 pb-8 sm:pb-10">
+            <span class="bg-white/15 backdrop-blur text-xs font-bold px-3 py-1 rounded-full mb-3">가방·에코백</span>
+            <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">로고 인쇄·각인<br>무료 샘플 상담 가능</h2>
+            <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-brand hover:text-white transition">상담 신청</button>
+          </div>
+        </div>
+        <div class="w-full flex-shrink-0 relative bg-cover bg-center" style="background-image:url('https://picsum.photos/seed/sosogift-office/900/600')">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10"></div>
+          <div class="relative h-full flex flex-col items-start justify-end text-white px-6 sm:px-10 pb-8 sm:pb-10">
+            <span class="bg-white/15 backdrop-blur text-xs font-bold px-3 py-1 rounded-full mb-3">문구·오피스</span>
+            <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">대량주문 할인<br>소량주문도 가능해요</h2>
+            <button onclick="filterByCategory('all')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-sale hover:text-white transition">카테고리 보기</button>
+          </div>
+        </div>
       </div>
-      <div class="w-full flex-shrink-0 bg-gradient-to-br from-sky-800 via-sky-900 to-gray-900 text-white flex flex-col items-center justify-center text-center py-8 sm:py-10 px-6">
-        <p class="text-xs font-black tracking-[0.2em] text-sky-300 mb-2">LOGO PRINTING</p>
-        <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">로고 인쇄·각인<br>무료 샘플 상담 가능</h2>
-        <button onclick="showToast('상담 신청 기능은 준비 중입니다.')" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-brand hover:text-white transition">상담 신청</button>
-      </div>
-      <div class="w-full flex-shrink-0 bg-gradient-to-br from-sale via-red-700 to-gray-900 text-white flex flex-col items-center justify-center text-center py-8 sm:py-10 px-6">
-        <p class="text-xs font-black tracking-[0.2em] text-red-200 mb-2">BULK ORDER</p>
-        <h2 class="text-lg sm:text-2xl font-black leading-tight mb-3">대량주문 할인<br>소량주문도 가능해요</h2>
-        <button onclick="filterByTab('all', document.getElementById('tab-all')); document.getElementById('product-grid').scrollIntoView({behavior:'smooth'});" class="bg-white text-gray-900 font-black px-5 py-2 rounded-full text-xs sm:text-sm hover:bg-sale hover:text-white transition">카테고리 보기</button>
-      </div>
-    </div>
-    <button onclick="prevSlide()" aria-label="이전 배너" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
-      <i class="fa-solid fa-chevron-left"></i>
-    </button>
-    <button onclick="nextSlide()" aria-label="다음 배너" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
-      <i class="fa-solid fa-chevron-right"></i>
-    </button>
-    <div id="banner-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"></div>
-  </section>
+      <button onclick="prevSlide()" aria-label="이전 배너" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button onclick="nextSlide()" aria-label="다음 배너" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <div id="banner-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"></div>
+    </section>
+  </div>
 
   <!-- 카테고리 아이콘 그리드 -->
   <div class="bg-white border-b border-gray-100">
