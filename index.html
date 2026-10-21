@@ -49,26 +49,25 @@
   <!-- 상단 헤더 -->
   <header class="bg-white border-b border-gray-200">
     <div class="max-w-[1280px] mx-auto px-4 py-3 flex items-center gap-3">
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">🎁</span>
-          <h1 class="text-lg sm:text-xl font-black tracking-tight">소소<span class="text-brand">기프트</span></h1>
-        </div>
-        <div class="hidden lg:block pl-3 ml-1 border-l border-gray-200 leading-tight">
-          <p class="text-[10px] text-gray-400 font-bold">대표번호</p>
-          <p class="text-sm font-black text-brand">010-3371-2212</p>
-        </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-2xl">🎁</span>
+        <h1 class="text-lg sm:text-xl font-black tracking-tight">소소<span class="text-brand">기프트</span></h1>
       </div>
 
-      <div class="flex-1 min-w-0 flex items-center bg-gray-100 rounded-full px-3 sm:px-4 py-2 mx-1 sm:mx-4">
+      <div class="flex-1 min-w-0 flex items-center bg-white border-2 border-gray-200 focus-within:border-brand rounded-full pl-4 sm:pl-5 pr-1.5 py-1.5 mx-2 sm:mx-6 transition">
         <label for="search-input" class="sr-only">상품 검색</label>
         <input id="search-input" type="text" placeholder="판촉물, 기념품을 검색해보세요" class="flex-1 min-w-0 bg-transparent text-sm outline-none placeholder:text-gray-400" onkeydown="if(event.key==='Enter'){searchProducts();}">
-        <button onclick="searchProducts()" aria-label="검색" class="shrink-0 w-8 h-8 -mr-1 flex items-center justify-center text-gray-500 hover:text-brand">
+        <button onclick="searchProducts()" aria-label="검색" class="shrink-0 w-9 h-9 flex items-center justify-center bg-brand text-white rounded-full hover:bg-blue-800 transition">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
 
-      <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+      <div class="hidden md:block text-right leading-tight shrink-0 mr-1">
+        <p class="text-[10px] text-gray-400 font-bold">대표번호</p>
+        <p class="text-base font-black text-brand">010-3371-2212</p>
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-3 shrink-0 md:pl-4 md:border-l md:border-gray-200">
         <button id="auth-widget" onclick="location.href='login.html'" class="flex items-center gap-1.5 text-gray-700 hover:text-brand px-1.5 sm:px-2 py-1">
           <i class="fa-regular fa-user text-lg"></i>
           <span id="auth-widget-text" class="inline-block align-middle text-xs font-bold max-w-[90px] sm:max-w-[160px] truncate">로그인</span>
