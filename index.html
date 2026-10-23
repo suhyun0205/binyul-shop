@@ -570,6 +570,9 @@
         gridEl.innerHTML = products.map(function (p) {
           return buildProductCardHtml(p, bestIds.indexOf(p.id) !== -1);
         }).join('');
+
+        // 배너/인기카테고리/시즌상품/인기상품/베스트상품도 같은 실제 데이터로 채우기
+        renderDynamicSections(products);
       });
     }
 
@@ -1111,19 +1114,20 @@
       });
     }
 
-    // 메인 배너: 여러 카드가 동시에 보이는 가로 스크롤 (사진 위 텍스트 오버레이, 화살표/자동 스크롤로 이동)
-    var bannerSlidesData = [
-      { img: 'images/products/tumbler-1.png', category: 'tumbler', tag: '텀블러·보온병', heading: '기업·단체 행사 선물<br>소소기프트에서 한 번에', hashtags: '#행사용품 #단체구매' },
-      { img: 'images/products/bag-1.jpg', category: 'bag', tag: '가방·에코백', heading: '로고 인쇄·각인<br>무료 샘플 상담 가능', hashtags: '#로고인쇄 #에코백' },
-      { img: 'images/products/cap-1.png', category: 'cap', tag: '모자', heading: '대량주문 할인<br>소량주문도 가능해요', hashtags: '#대량주문 #소량가능' },
-      { img: 'images/products/office-notebook.jpg', category: 'office', tag: '문구·오피스', heading: '사무실 필수템<br>실용적인 문구류', hashtags: '#사무용품 #문구' },
-      { img: 'images/products/umbrella-1.jpg', category: 'umbrella', tag: '우산', heading: '비 오는 날 필수템<br>튼튼한 우산 선물', hashtags: '#우산 #행사용품' },
-      { img: 'images/products/umbrella-2.jpg', category: 'umbrella', tag: '우산', heading: '화사한 컬러 우산<br>포인트 되는 선물', hashtags: '#컬러우산 #포인트선물' },
-      { img: 'images/products/electronics-2.jpg', category: 'electronics', tag: 'IT·전자', heading: '사무용 USB<br>로고 각인 가능', hashtags: '#USB #로고각인' },
-      { img: 'images/products/kitchen-1.jpg', category: 'kitchen', tag: '생활·주방', heading: '원목 주방용품<br>실생활에 딱 맞는 선물', hashtags: '#주방용품 #실용선물' },
-      { img: 'images/products/health-1.jpg', category: 'health', tag: '건강·위생', heading: '방심은 금물!<br>청결 지킴이 세트', hashtags: '#위생용품 #단체선물' },
-      { img: 'images/products/season-1.jpg', category: 'season', tag: '시즌·기획상품', heading: '연말·시즌 선물<br>리본 포장 서비스', hashtags: '#시즌선물 #포장서비스' }
-    ];
+    // 카테고리 메타 정보 (라벨/아이콘/배너 문구 — 상품이 바뀌어도 이 틀은 고정)
+    var CATEGORY_META = {
+      office: { label: '문구·오피스', icon: '✏️', heading: '사무실 필수템<br>실용적인 문구류', hashtags: '#사무용품 #문구', keywords: '노트, 볼펜, 파일, 사무용품' },
+      tumbler: { label: '텀블러·보온병', icon: '🥤', heading: '기업·단체 행사 선물<br>소소기프트에서 한 번에', hashtags: '#행사용품 #단체구매', keywords: '텀블러, 보온병, 머그컵' },
+      bag: { label: '가방·에코백', icon: '👜', heading: '로고 인쇄·각인<br>무료 샘플 상담 가능', hashtags: '#로고인쇄 #에코백', keywords: '에코백, 토트백, 파우치' },
+      umbrella: { label: '우산', icon: '☂️', heading: '비 오는 날 필수템<br>튼튼한 우산 선물', hashtags: '#우산 #행사용품', keywords: '3단우산, 2단우산, 우산세트' },
+      apparel: { label: '의류·단체복', icon: '👕', heading: '단체복 맞춤 제작<br>로고 인쇄 가능', hashtags: '#단체복 #로고인쇄', keywords: '단체티, 카라티, 유니폼' },
+      cap: { label: '모자', icon: '🧢', heading: '대량주문 할인<br>소량주문도 가능해요', hashtags: '#대량주문 #소량가능', keywords: '볼캡, 버킷햇, 단체모자' },
+      electronics: { label: 'IT·전자', icon: '🔌', heading: '사무용 IT용품<br>로고 각인 가능', hashtags: '#IT용품 #로고각인', keywords: 'USB, 보조배터리, 충전케이블' },
+      kitchen: { label: '생활·주방', icon: '🍳', heading: '원목 주방용품<br>실생활에 딱 맞는 선물', hashtags: '#주방용품 #실용선물', keywords: '도마, 밀폐용기, 주방용품' },
+      health: { label: '건강·위생', icon: '🧴', heading: '방심은 금물!<br>청결 지킴이 세트', hashtags: '#위생용품 #단체선물', keywords: '손소독제, 마스크, 위생용품' },
+      season: { label: '시즌·기획상품', icon: '🎁', heading: '연말·시즌 선물<br>마음을 전하는 선물', hashtags: '#시즌선물 #기획상품', keywords: '연말선물, 명절선물, 기획세트' }
+    };
+    var CATEGORY_ORDER = ['office', 'tumbler', 'bag', 'umbrella', 'apparel', 'cap', 'electronics', 'kitchen', 'health', 'season'];
 
     function buildBannerSlideHtml(slide) {
       return (
@@ -1139,22 +1143,6 @@
       );
     }
 
-    document.getElementById('banner-track').innerHTML = bannerSlidesData.map(buildBannerSlideHtml).join('');
-
-    // 인기 카테고리 (원형 이미지 랭킹 리스트)
-    var popularCatData = [
-      { img: 'images/products/office-notebook.jpg', category: 'office', name: '문구·오피스', keywords: '노트, 볼펜, 파일, 사무용품' },
-      { img: 'images/products/tumbler-1.png', category: 'tumbler', name: '텀블러·보온병', keywords: '텀블러, 보온병, 머그컵' },
-      { img: 'images/products/bag-1.jpg', category: 'bag', name: '가방·에코백', keywords: '에코백, 토트백, 파우치' },
-      { img: 'images/products/umbrella-1.jpg', category: 'umbrella', name: '우산', keywords: '3단우산, 2단우산, 우산세트' },
-      { img: 'images/products/apparel-2.jpg', category: 'apparel', name: '의류·단체복', keywords: '단체티, 카라티, 유니폼' },
-      { img: 'images/products/cap-1.png', category: 'cap', name: '모자', keywords: '볼캡, 버킷햇, 단체모자' },
-      { img: 'images/products/electronics-2.jpg', category: 'electronics', name: 'IT·전자', keywords: 'USB, 보조배터리, 충전케이블' },
-      { img: 'images/products/kitchen-1.jpg', category: 'kitchen', name: '생활·주방', keywords: '도마, 밀폐용기, 주방용품' },
-      { img: 'images/products/health-1.jpg', category: 'health', name: '건강·위생', keywords: '손소독제, 마스크, 위생용품' },
-      { img: 'images/products/season-1.jpg', category: 'season', name: '시즌·기획상품', keywords: '연말선물, 명절선물, 기획세트' }
-    ];
-
     function buildPopularCatHtml(item, index) {
       return (
         '<button onclick="filterByCategory(\'' + item.category + '\')" class="snap-start shrink-0 w-[108px] sm:w-[140px] text-left">' +
@@ -1168,48 +1156,12 @@
       );
     }
 
-    document.getElementById('popular-cat-track').innerHTML = popularCatData.map(buildPopularCatHtml).join('');
-
     function popularCatScroll(dir) {
       var track = document.getElementById('popular-cat-track');
       var firstCard = track.firstElementChild;
       var step = (firstCard ? firstCard.getBoundingClientRect().width : 140) + 24;
       track.scrollBy({ left: dir * step * 3, behavior: 'smooth' });
     }
-
-    // 시즌 상품 (3단 테마 판촉물 모음, Supabase에 등록된 실제 상품 데이터와 동일한 이름/가격 사용)
-    var seasonalColumns = [
-      {
-        bannerImg: 'images/products/office-pencilcase.jpg',
-        captionSmall: '사무실에서 유용한',
-        captionBig: '문구·오피스 소품',
-        items: [
-          { img: 'images/products/office-notebook.jpg', code: 'P-1001', name: '스프링 무지노트', price: '2,400원~' },
-          { img: 'images/products/office-pencilcase.jpg', code: 'P-1002', name: '패턴 지퍼 파우치', price: '6,400원~' },
-          { img: 'images/products/electronics-2.jpg', code: 'P-1003', name: 'USB 메모리 32GB', price: '10,400원~' }
-        ]
-      },
-      {
-        bannerImg: 'images/products/bag-1.jpg',
-        captionSmall: '야외에서도 든든한',
-        captionBig: '가방·우산 용품',
-        items: [
-          { img: 'images/products/umbrella-1.jpg', code: 'P-1004', name: '2단 자동 우산', price: '14,400원~' },
-          { img: 'images/products/umbrella-2.jpg', code: 'P-1005', name: '미니 3단 우산', price: '11,200원~' },
-          { img: 'images/products/bag-1.jpg', code: 'P-1006', name: '투톤 캔버스 토트백', price: '7,200원~' }
-        ]
-      },
-      {
-        bannerImg: 'images/products/season-1.jpg',
-        captionSmall: '실생활에 꼭 필요한',
-        captionBig: '생활·선물 세트',
-        items: [
-          { img: 'images/products/kitchen-1.jpg', code: 'P-1007', name: '원목 도마', price: '8,000원~' },
-          { img: 'images/products/health-1.jpg', code: 'P-1008', name: '휴대용 손소독제', price: '3,200원~' },
-          { img: 'images/products/season-1.jpg', code: 'P-1009', name: '리본 선물포장 세트', price: '4,800원~' }
-        ]
-      }
-    ];
 
     function buildSeasonalItemHtml(item) {
       return (
@@ -1239,33 +1191,12 @@
       );
     }
 
-    document.getElementById('seasonal-track').innerHTML = seasonalColumns.map(buildSeasonalColumnHtml).join('');
-
     function seasonalScroll(dir) {
       var track = document.getElementById('seasonal-track');
       var firstCard = track.firstElementChild;
       var step = (firstCard ? firstCard.getBoundingClientRect().width : 320) + 20;
       track.scrollBy({ left: dir * step, behavior: 'smooth' });
     }
-
-    // 인기 상품: 왼쪽 카테고리 알약탭 + 오른쪽 상품 그리드
-    var popularPillData = [
-      { category: 'office', icon: '✏️', name: '볼펜·사무문구' },
-      { category: 'tumbler', icon: '🥤', name: '텀블러·주방·식품' },
-      { category: 'bag', icon: '👜', name: '가방·의류' },
-      { category: 'electronics', icon: '🔌', name: 'USB·디지털·가전' },
-      { category: 'kitchen', icon: '🍳', name: '가정·생활용품' },
-      { category: 'health', icon: '🧴', name: '건강·레저·차량' }
-    ];
-
-    var popularGridData = [
-      { img: 'images/products/tumbler-1.png', category: 'tumbler', name: '텀블러' },
-      { img: 'images/products/bag-2.jpg', category: 'bag', name: '가방' },
-      { img: 'images/products/cap-1.png', category: 'cap', name: '모자' },
-      { img: 'images/products/electronics-2.jpg', category: 'electronics', name: 'USB' },
-      { img: 'images/products/kitchen-1.jpg', category: 'kitchen', name: '주방용품' },
-      { img: 'images/products/health-1.jpg', category: 'health', name: '위생용품' }
-    ];
 
     function buildPopularPillHtml(pill, index) {
       var activeClass = index === 0 ? 'border-sale text-sale bg-rose-50' : 'border-gray-200 text-gray-600 hover:border-gray-300';
@@ -1287,40 +1218,6 @@
       );
     }
 
-    document.getElementById('popular-pill-list').innerHTML = popularPillData.map(buildPopularPillHtml).join('');
-    document.getElementById('popular-grid').innerHTML = popularGridData.map(buildPopularGridHtml).join('');
-
-    // 베스트 상품 (카테고리 탭 + 랭킹 그리드, Supabase 등록 상품과 동일한 데이터)
-    var bestProductsData = [
-      { category: 'office', img: 'images/products/office-notebook.jpg', name: '스프링 무지노트', price: '2,400원' },
-      { category: 'office', img: 'images/products/office-pencilcase.jpg', name: '패턴 지퍼 파우치', price: '6,400원' },
-      { category: 'tumbler', img: 'images/products/tumbler-1.png', name: '클리어 보냉 텀블러', price: '9,600원' },
-      { category: 'bag', img: 'images/products/bag-1.jpg', name: '투톤 캔버스 토트백', price: '7,200원' },
-      { category: 'bag', img: 'images/products/bag-2.jpg', name: '접이식 장바구니', price: '5,600원' },
-      { category: 'umbrella', img: 'images/products/umbrella-1.jpg', name: '2단 자동 우산', price: '14,400원' },
-      { category: 'umbrella', img: 'images/products/umbrella-2.jpg', name: '미니 3단 우산', price: '11,200원' },
-      { category: 'apparel', img: 'images/products/apparel-2.jpg', name: '단체 카라 티셔츠', price: '12,800원' },
-      { category: 'cap', img: 'images/products/cap-1.png', name: '볼캡 모자', price: '8,800원' },
-      { category: 'electronics', img: 'images/products/electronics-2.jpg', name: 'USB 메모리 32GB', price: '10,400원' },
-      { category: 'kitchen', img: 'images/products/kitchen-1.jpg', name: '원목 도마', price: '8,000원' },
-      { category: 'health', img: 'images/products/health-1.jpg', name: '휴대용 손소독제', price: '3,200원' },
-      { category: 'season', img: 'images/products/season-1.jpg', name: '리본 선물포장 세트', price: '4,800원' }
-    ];
-
-    var bestCategoryTabs = [
-      { key: 'all', label: '전체' },
-      { key: 'office', label: '문구·오피스' },
-      { key: 'tumbler', label: '텀블러·보온병' },
-      { key: 'bag', label: '가방·에코백' },
-      { key: 'umbrella', label: '우산' },
-      { key: 'apparel', label: '의류·단체복' },
-      { key: 'cap', label: '모자' },
-      { key: 'electronics', label: 'IT·전자' },
-      { key: 'kitchen', label: '생활·주방' },
-      { key: 'health', label: '건강·위생' },
-      { key: 'season', label: '시즌·기획상품' }
-    ];
-
     function buildBestTabHtml(tab, index) {
       var activeClass = index === 0 ? 'bg-brand text-white border-brand' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300';
       return '<button onclick="bestFilterByCategory(\'' + tab.key + '\', this)" data-key="' + tab.key + '" class="best-tab border rounded-full px-3.5 py-1.5 text-xs font-bold transition ' + activeClass + '">' + tab.label + '</button>';
@@ -1339,9 +1236,6 @@
       );
     }
 
-    document.getElementById('best-tabs').innerHTML = bestCategoryTabs.map(buildBestTabHtml).join('');
-    document.getElementById('best-grid').innerHTML = bestProductsData.map(buildBestCardHtml).join('');
-
     function bestFilterByCategory(category, clickedTab) {
       document.querySelectorAll('.best-tab').forEach(function (tab) {
         tab.className = 'best-tab border rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-white text-gray-600 border-gray-200 hover:border-gray-300';
@@ -1359,7 +1253,68 @@
       });
     }
 
-    bestFilterByCategory('all', document.querySelector('.best-tab'));
+    // 실제 Supabase 상품 데이터로 배너/인기카테고리/시즌상품/인기상품/베스트상품을 전부 채움
+    function renderDynamicSections(products) {
+      var byCategory = {};
+      products.forEach(function (p) {
+        if (!byCategory[p.category]) byCategory[p.category] = p;
+      });
+      var activeCats = CATEGORY_ORDER.filter(function (c) { return byCategory[c]; });
+
+      // 배너
+      var bannerSlidesData = activeCats.map(function (c) {
+        var meta = CATEGORY_META[c];
+        var p = byCategory[c];
+        return { img: p.image_url, category: c, tag: meta.label, heading: meta.heading, hashtags: meta.hashtags };
+      });
+      document.getElementById('banner-track').innerHTML = bannerSlidesData.map(buildBannerSlideHtml).join('');
+
+      // 인기 카테고리
+      var popularCatData = activeCats.map(function (c) {
+        var meta = CATEGORY_META[c];
+        var p = byCategory[c];
+        return { img: p.image_url, category: c, name: meta.label, keywords: meta.keywords };
+      });
+      document.getElementById('popular-cat-track').innerHTML = popularCatData.map(buildPopularCatHtml).join('');
+
+      // 시즌 상품 (카테고리를 3개 그룹으로 묶어서 컬럼 구성)
+      var seasonalGroups = [
+        { captionSmall: '사무실에서 유용한', captionBig: '문구·오피스 소품', cats: ['office', 'electronics'] },
+        { captionSmall: '야외에서도 든든한', captionBig: '가방·우산·의류', cats: ['bag', 'umbrella', 'apparel', 'cap'] },
+        { captionSmall: '실생활에 꼭 필요한', captionBig: '생활·건강·선물', cats: ['kitchen', 'health', 'season', 'tumbler'] }
+      ];
+      var seasonalColumns = seasonalGroups.map(function (g) {
+        var items = g.cats.filter(function (c) { return byCategory[c]; }).map(function (c) {
+          var p = byCategory[c];
+          return { img: p.image_url, code: p.slug, name: p.name, price: p.price.toLocaleString() + '원~' };
+        });
+        return { bannerImg: items.length ? items[0].img : '', captionSmall: g.captionSmall, captionBig: g.captionBig, items: items };
+      }).filter(function (g) { return g.items.length > 0; });
+      document.getElementById('seasonal-track').innerHTML = seasonalColumns.map(buildSeasonalColumnHtml).join('');
+
+      // 인기 상품 (알약탭 + 그리드)
+      var pillCats = activeCats.slice(0, 6);
+      var popularPillData = pillCats.map(function (c) {
+        return { category: c, icon: CATEGORY_META[c].icon, name: CATEGORY_META[c].label };
+      });
+      var popularGridData = pillCats.map(function (c) {
+        var p = byCategory[c];
+        return { img: p.image_url, category: c, name: CATEGORY_META[c].label };
+      });
+      document.getElementById('popular-pill-list').innerHTML = popularPillData.map(buildPopularPillHtml).join('');
+      document.getElementById('popular-grid').innerHTML = popularGridData.map(buildPopularGridHtml).join('');
+
+      // 베스트 상품 (전체 상품 + 카테고리 탭)
+      var bestProductsData = products.map(function (p) {
+        return { category: p.category, img: p.image_url, name: p.name, price: p.price.toLocaleString() + '원' };
+      });
+      var bestCategoryTabs = [{ key: 'all', label: '전체' }].concat(
+        activeCats.map(function (c) { return { key: c, label: CATEGORY_META[c].label }; })
+      );
+      document.getElementById('best-tabs').innerHTML = bestCategoryTabs.map(buildBestTabHtml).join('');
+      document.getElementById('best-grid').innerHTML = bestProductsData.map(buildBestCardHtml).join('');
+      bestFilterByCategory('all', document.querySelector('.best-tab'));
+    }
 
     var bannerTimer = null;
 

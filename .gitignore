@@ -1,0 +1,9 @@
+# 환경변수/비밀키 (절대 커밋 금지)
+.env
+sourcing-tool/.env
+sourcing-tool/apikey.txt
+sourcing-tool/config.txt
+
+# 소싱 도구 결과물 (로컬 전용)
+sourcing-tool/output/
+sourcing-tool/__pycache__/
