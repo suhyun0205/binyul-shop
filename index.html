@@ -514,15 +514,22 @@
       }
 
       var nameHtml = p.detail_url
-        ? '<a href="' + p.detail_url + '" class="hover:underline">' + p.name + '</a>'
+        ? '<a href="' + p.detail_url + '" target="_blank" rel="noopener" class="hover:underline">' + p.name + '</a>'
         : p.name;
+
+      var photoOpenTag = p.detail_url
+        ? '<a href="' + p.detail_url + '" target="_blank" rel="noopener" aria-label="' + p.name + ' 상세보기">'
+        : '';
+      var photoCloseTag = p.detail_url ? '</a>' : '';
 
       var isNew = p.badge === '신상제품';
 
       return (
         '<div class="card group relative" data-category="' + p.category + '" data-id="' + p.id + '" data-price="' + p.price + '" data-reviews="' + p.review_count + '" data-new="' + isNew + '" data-best="' + isBest + '">' +
           '<div class="photo-wrap relative overflow-hidden bg-gray-100 rounded-xl aspect-square">' +
+            photoOpenTag +
             '<img class="photo w-full h-full object-cover group-hover:scale-105 transition duration-300" src="' + p.image_url + '" alt="' + p.name + '">' +
+            photoCloseTag +
             '<span class="absolute top-2 left-2 bg-gray-900/70 text-white text-[10px] font-bold px-2 py-1 rounded">상품코드 ' + (400000 + p.id) + '</span>' +
             badgeHtml +
             '<button class="wish-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-400 shadow" onclick="toggleWish(this)" aria-label="찜하기"><i class="fa-solid fa-heart"></i></button>' +
@@ -1224,13 +1231,17 @@
     }
 
     function buildBestCardHtml(item) {
+      var linkOpen = item.detail_url ? '<a href="' + item.detail_url + '" target="_blank" rel="noopener">' : '';
+      var linkClose = item.detail_url ? '</a>' : '';
       return (
         '<div class="best-card" data-category="' + item.category + '">' +
           '<p class="best-rank text-lg font-black text-gray-300 mb-1.5"></p>' +
+          linkOpen +
           '<div class="aspect-square rounded-lg overflow-hidden bg-gray-100 mb-2">' +
             '<img src="' + item.img + '" class="w-full h-full object-cover" alt="' + item.name + '">' +
           '</div>' +
-          '<p class="text-sm font-bold truncate">' + item.name + '</p>' +
+          '<p class="text-sm font-bold truncate hover:underline">' + item.name + '</p>' +
+          linkClose +
           '<p class="text-sm font-black text-brand mt-0.5">' + item.price + '</p>' +
         '</div>'
       );
@@ -1306,7 +1317,7 @@
 
       // 베스트 상품 (전체 상품 + 카테고리 탭)
       var bestProductsData = products.map(function (p) {
-        return { category: p.category, img: p.image_url, name: p.name, price: p.price.toLocaleString() + '원' };
+        return { category: p.category, img: p.image_url, name: p.name, price: p.price.toLocaleString() + '원', detail_url: p.detail_url };
       });
       var bestCategoryTabs = [{ key: 'all', label: '전체' }].concat(
         activeCats.map(function (c) { return { key: c, label: CATEGORY_META[c].label }; })

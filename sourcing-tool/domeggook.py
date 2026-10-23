@@ -159,6 +159,7 @@ def build_import_sql(api_key, item_nos, market, category, markup, out_path):
         discount_rate = 20
         img = thumb.get("large") or thumb.get("original") or thumb.get("small") or ""
         slug = "dg-" + str(no)
+        detail_url = "https://domeggook.com/" + str(no)
 
         if wholesale == 0:
             print("경고: 상품번호 " + str(no) + " 가격 정보를 가져오지 못했습니다. 건너뜁니다.")
@@ -167,7 +168,7 @@ def build_import_sql(api_key, item_nos, market, category, markup, out_path):
         rows.append(
             "('" + slug + "', '" + name + "', '" + category + "', '" + img + "', "
             "null, " + str(old_price) + ", " + str(price) + ", " + str(discount_rate) + ", "
-            "0, 0, 0, '#도매소싱', null)"
+            "0, 0, 0, '#도매소싱', '" + detail_url + "')"
         )
         print("[OK] " + str(no) + " " + name + " -> 도매" + "{:,}".format(wholesale) + "원 / 판매" + "{:,}".format(price) + "원")
 
